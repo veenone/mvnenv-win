@@ -24,11 +24,34 @@ mvnenv-win is a command-line tool for managing multiple Apache Maven installatio
 git clone https://github.com/veenone/mvnenv-win.git
 cd mvnenv-win
 
-# Build
+# Build both executables
 go build -ldflags "-X main.Version=$(cat VERSION)" -o bin/mvnenv.exe cmd/mvnenv/main.go
+go build -o bin/shim.exe cmd/shim/main.go
 
-# Add to PATH
-# Add C:\path\to\mvnenv-win\bin to your PATH environment variable
+# Create mvnenv directory structure
+mkdir -p %USERPROFILE%\.mvnenv\bin
+
+# Copy executables to mvnenv directory
+copy bin\mvnenv.exe %USERPROFILE%\.mvnenv\bin\
+copy bin\shim.exe %USERPROFILE%\.mvnenv\bin\
+
+# Add to PATH (PowerShell - run as Administrator or use User PATH)
+$env:Path = "$env:USERPROFILE\.mvnenv\shims;$env:USERPROFILE\.mvnenv\bin;" + $env:Path
+[Environment]::SetEnvironmentVariable("Path", "$env:USERPROFILE\.mvnenv\shims;$env:USERPROFILE\.mvnenv\bin;" + [Environment]::GetEnvironmentVariable("Path", "User"), "User")
+
+# Or add manually:
+# Add these directories to your PATH environment variable (in order):
+#   1. %USERPROFILE%\.mvnenv\shims  (highest priority)
+#   2. %USERPROFILE%\.mvnenv\bin
+```
+
+### Initial Setup
+
+After installation, generate the shims for Maven commands:
+
+```bash
+# This creates shim executables that intercept Maven commands
+mvnenv rehash
 ```
 
 ## Quick Start
@@ -113,7 +136,14 @@ mvnenv-win uses the following directory structure in `%USERPROFILE%\.mvnenv\`:
 
 ```
 .mvnenv/
-├── bin/            # mvnenv executable
+├── bin/            # mvnenv and shim executables
+│   ├── mvnenv.exe
+│   └── shim.exe
+├── shims/          # Command shims (mvn.exe, mvnDebug.exe, etc.)
+│   ├── mvn.exe
+│   ├── mvn.cmd
+│   ├── mvnDebug.exe
+│   └── mvnDebug.cmd
 ├── cache/          # Downloaded Maven archives
 ├── config/         # Configuration files
 │   └── config.yaml # Global configuration
@@ -122,6 +152,8 @@ mvnenv-win uses the following directory structure in `%USERPROFILE%\.mvnenv\`:
     ├── 3.9.4/
     └── ...
 ```
+
+**Important:** The `shims` directory must be first in your PATH to intercept Maven commands.
 
 ## Version Resolution
 
@@ -167,6 +199,25 @@ $env:MVNENV_MAVEN_VERSION = ""
 
 ## Troubleshooting
 
+### Maven commands still use system Maven
+
+If `mvn -version` shows the wrong version, your PATH may not be configured correctly:
+
+```bash
+# Check if shims directory is in PATH and has priority
+echo %PATH%
+
+# The shims directory should appear BEFORE any other Maven installation
+# Example: C:\Users\YourName\.mvnenv\shims;C:\Program Files\Maven\...
+
+# Regenerate shims
+mvnenv rehash
+
+# Verify shim is being used
+where mvn
+# Should show: C:\Users\YourName\.mvnenv\shims\mvn.exe
+```
+
 ### Version not found
 
 ```bash
@@ -185,6 +236,19 @@ mvnenv version
 
 # Show path to Maven executable
 mvnenv which mvn
+```
+
+### Shims not working
+
+```bash
+# Regenerate shims after installing/uninstalling versions
+mvnenv rehash
+
+# Check if shim.exe exists
+dir %USERPROFILE%\.mvnenv\bin\shim.exe
+
+# Check if shims were created
+dir %USERPROFILE%\.mvnenv\shims\
 ```
 
 ## Development
