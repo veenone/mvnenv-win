@@ -2,7 +2,7 @@
 
 ## Implementation Tasks for cli-commands Spec
 
-- [ ] 1. Initialize Go module and dependencies
+- [x] 1. Initialize Go module and dependencies
   - Files: `go.mod`, `go.sum`
   - Initialize Go module with `go mod init github.com/veenone/mvnenv-win`
   - Add Cobra dependency: `github.com/spf13/cobra v1.8+`
@@ -11,7 +11,7 @@
   - _Requirements: All (foundation)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in Go modules and dependency management | Task: Initialize Go module for mvnenv-win project and add Cobra CLI framework dependency v1.8+, ensuring proper module path and dependency versioning | Restrictions: Use Go 1.21+ compatible dependencies, do not add unnecessary dependencies, ensure reproducible builds | Success: go.mod created with correct module path, Cobra dependency added and working, `go mod tidy` runs without errors | Instructions: After completing, edit tasks.md and change this task from [ ] to [x]_
 
-- [ ] 2. Create VERSION file for version management
+- [x] 2. Create VERSION file for version management
   - Files: `VERSION`
   - Create VERSION file in project root containing version number (e.g., "1.0.0")
   - Document version file format (single line with semver version)
@@ -20,7 +20,7 @@
   - _Requirements: Req 2 (Version Display Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: DevOps Engineer with expertise in version management and build automation | Task: Create VERSION file in project root containing initial version "1.0.0" following semantic versioning, establishing single source for version information that will be embedded at build time | Restrictions: VERSION file must contain only version number (no prefix, no newline at end), must follow semver format (MAJOR.MINOR.PATCH), file in project root | Success: VERSION file created with "1.0.0", file contains only version string, ready for build-time embedding | Instructions: After completing, edit tasks.md and change this task from [ ] to [x]_
 
-- [ ] 3. Create main entry point with version embedding
+- [x] 3. Create main entry point with version embedding
   - Files: `cmd/mvnenv/main.go`
   - Create main.go with Cobra root command initialization
   - Add version variable for build-time embedding via ldflags
@@ -32,8 +32,8 @@
   - _Requirements: Req 1 (Command Framework), Req 2 (Version Display), Req 6 (Help System)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go CLI Developer specializing in Cobra framework and build-time variable injection | Task: Create main.go entry point implementing root command with Cobra and version embedding following Requirements 1, 2, and 6, using var Version string for ldflags embedding with fallback to read VERSION file, configuring proper error handling per design.md Component 1 | Restrictions: Must set SilenceErrors=true and SilenceUsage=true, version variable must be package-level var for ldflags, fallback reads VERSION file if Version is empty, ensure clean initialization pattern | Success: Application runs and displays help with `mvnenv --help`, `mvnenv --version` shows version from VERSION file during development, version embeddable via `go build -ldflags "-X main.Version=$(cat VERSION)"`, error handling configured correctly | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 4. Implement "commands" command
-  - Files: `cmd/mvnenv/commands.go`
+- [x] 4. Implement "commands" command
+  - Files: `cmd/mvnenv/cmd/commands.go`
   - Create NewCommandsCmd() function returning cobra.Command
   - Implement runCommands() to list all available commands
   - Add command to root in main.go
@@ -42,18 +42,18 @@
   - _Requirements: Req 1 (Command Discovery)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in Cobra CLI framework | Task: Implement "commands" command following Requirement 1 and design.md Component 2, listing all available mvnenv commands (one per line, plain text) | Restrictions: Must follow design.md Component 2 implementation exactly, output plain text only (no colors/emojis), do not show hidden commands | Success: `mvnenv commands` lists all commands correctly, output is plain text list, follows pyenv-win format | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 5. Implement "version" command
-  - Files: `cmd/mvnenv/version.go`
+- [x] 5. Implement "version" command
+  - Files: `cmd/mvnenv/cmd/version.go`
   - Create NewVersionCmd() function returning cobra.Command
-  - Implement runVersion() with placeholder output
+  - Implement runVersion() with version resolution integration
   - Add command to root in main.go
   - Purpose: Display currently active Maven version
   - _Leverage: design.md Component 3 pattern_
   - _Requirements: Req 2 (Version Display Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in CLI command implementation | Task: Implement "version" command following Requirement 2 and design.md Component 3, displaying current Maven version (placeholder: "3.9.4") or "No Maven version set" | Restrictions: Must follow design.md Component 3 exactly, use placeholder until core-version-management spec implemented, plain text output only | Success: `mvnenv version` outputs version number or "No Maven version set", plain text format, no errors | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 6. Implement "versions" command
-  - Files: `cmd/mvnenv/versions.go`
+- [x] 6. Implement "versions" command
+  - Files: `cmd/mvnenv/cmd/versions.go`
   - Create NewVersionsCmd() function returning cobra.Command
   - Implement runVersions() to list installed versions with `*` for current
   - Add command to root in main.go
@@ -62,8 +62,8 @@
   - _Requirements: Req 2 (Version Display Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with CLI and formatting expertise | Task: Implement "versions" command following Requirement 2 and design.md Component 4, listing installed versions with current marked by `* ` prefix (placeholder versions) | Restrictions: Must follow design.md Component 4, use placeholder data, format as "* 3.9.4" for current and "  3.8.6" for others, plain text only | Success: `mvnenv versions` lists versions with proper formatting, current version marked with asterisk, plain text output | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 7. Implement "global" command
-  - Files: `cmd/mvnenv/global.go`
+- [x] 7. Implement "global" command
+  - Files: `cmd/mvnenv/cmd/global.go`
   - Create NewGlobalCmd() function with MaximumNArgs(1)
   - Implement runGlobal() for both get and set operations
   - Set operations: no output on success (pyenv-win convention)
@@ -71,10 +71,10 @@
   - Purpose: Set or show global Maven version
   - _Leverage: design.md Component 5 pattern_
   - _Requirements: Req 3 (Version Selection Commands)_
-  - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in CLI argument parsing and command implementation | Task: Implement "global" command following Requirement 3 and design.md Component 5, handling both set and get operations with placeholder logic | Restrictions: Must follow design.md Component 5 pattern, no output on set success (pyenv-win convention), use cobra.MaximumNArgs(1), plain text only | Success: `mvnenv global` shows version, `mvnenv global 3.9.4` sets silently (no output), follows pyenv-win behavior | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
+  - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in CLI argument parsing and command implementation | Task: Implement "global" command following Requirement 3 and design.md Component 5, handling both set and set operations with placeholder logic | Restrictions: Must follow design.md Component 5 pattern, no output on set success (pyenv-win convention), use cobra.MaximumNArgs(1), plain text only | Success: `mvnenv global` shows version, `mvnenv global 3.9.4` sets silently (no output), follows pyenv-win behavior | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 8. Implement "local" command
-  - Files: `cmd/mvnenv/local.go`
+- [x] 8. Implement "local" command
+  - Files: `cmd/mvnenv/cmd/local.go`
   - Create NewLocalCmd() function with MaximumNArgs(1)
   - Implement runLocal() for both get and set operations
   - Set operations: no output on success
@@ -84,8 +84,8 @@
   - _Requirements: Req 3 (Version Selection Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in file operations and CLI commands | Task: Implement "local" command following Requirement 3 and design.md Component 5, handling .maven-version file operations with placeholder logic | Restrictions: Must follow design.md Component 5 pattern, no output on set success, use cobra.MaximumNArgs(1), plain text only | Success: `mvnenv local` shows version, `mvnenv local 3.8.6` sets silently, follows pyenv-win conventions | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 9. Implement "shell" command
-  - Files: `cmd/mvnenv/shell.go`
+- [x] 9. Implement "shell" command
+  - Files: `cmd/mvnenv/cmd/shell.go`
   - Create NewShellCmd() function with --unset flag
   - Implement runShell() for get/set/unset operations
   - Handle --unset flag for clearing shell version
@@ -95,10 +95,10 @@
   - _Requirements: Req 3 (Version Selection Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in environment variables and shell integration | Task: Implement "shell" command following Requirement 3 and design.md Component 5 shell pattern, handling get/set/unset operations with --unset flag | Restrictions: Must follow design.md shell command pattern, support --unset flag, no output on set success, plain text only | Success: `mvnenv shell` shows version, `mvnenv shell 3.6.3` sets silently, `mvnenv shell --unset` clears silently | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 10. Implement "install" command
-  - Files: `cmd/mvnenv/install.go`
+- [x] 10. Implement "install" command
+  - Files: `cmd/mvnenv/cmd/install.go`
   - Create NewInstallCmd() with -l (list) and -q (quiet) flags
-  - Implement runInstall() for listing and installation (placeholder logic)
+  - Implement runInstall() for listing and installation with Apache archive integration
   - Support multiple version arguments
   - Add command to root in main.go
   - Purpose: Install Maven versions or list available versions
@@ -106,8 +106,8 @@
   - _Requirements: Req 4 (Installation and Listing Commands), Req 7 (Global Flags)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in CLI flags and command arguments | Task: Implement "install" command following Requirements 4 and 7 and design.md Component 6, supporting -l (list) and -q (quiet) flags with variadic version arguments | Restrictions: Must follow design.md Component 6 exactly, support multiple versions, respect -q flag for quiet output, use placeholder logic for actual installation | Success: `mvnenv install -l` lists versions, `mvnenv install 3.9.4` shows installation message, `mvnenv install -q 3.9.4` is silent, multiple versions supported | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 11. Implement "uninstall" command
-  - Files: `cmd/mvnenv/uninstall.go`
+- [x] 11. Implement "uninstall" command
+  - Files: `cmd/mvnenv/cmd/uninstall.go`
   - Create NewUninstallCmd() requiring at least one argument
   - Implement runUninstall() supporting multiple versions
   - Use cobra.MinimumNArgs(1) for validation
@@ -117,20 +117,20 @@
   - _Requirements: Req 4 (Installation and Listing Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in command argument validation and error handling | Task: Implement "uninstall" command following Requirement 4 and design.md Component 7, requiring at least one version argument and supporting multiple versions | Restrictions: Must follow design.md Component 7 pattern, use cobra.MinimumNArgs(1), support multiple versions, use placeholder logic | Success: `mvnenv uninstall 3.9.4` works with message, `mvnenv uninstall 3.9.4 3.8.6` handles multiple versions, `mvnenv uninstall` shows error | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 12. Implement "update" command
-  - Files: `cmd/mvnenv/update.go`
+- [x] 12. Implement "update" command
+  - Files: `cmd/mvnenv/cmd/update.go`
   - Create NewUpdateCmd() with no arguments
-  - Implement runUpdate() to update version cache (placeholder)
+  - Implement runUpdate() to update version cache from Apache archive
   - Add command to root in main.go
   - Purpose: Update cached version database from repositories
   - _Leverage: design.md Component 8 update pattern_
   - _Requirements: Req 5 (Utility Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with CLI command implementation expertise | Task: Implement "update" command following Requirement 5 and design.md Component 8 update pattern, updating version cache with placeholder logic | Restrictions: Must follow design.md Component 8 pattern, no arguments required, simple output message, plain text only | Success: `mvnenv update` displays "Updating version cache..." message and completes successfully | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 13. Implement "rehash" command
-  - Files: `cmd/mvnenv/rehash.go`
+- [x] 13. Implement "rehash" command
+  - Files: `cmd/mvnenv/cmd/rehash.go`
   - Create NewRehashCmd() with no arguments
-  - Implement runRehash() to rebuild shims (placeholder)
+  - Implement runRehash() to rebuild shims
   - Silent on success (no output)
   - Add command to root in main.go
   - Purpose: Rebuild shim executables
@@ -138,10 +138,10 @@
   - _Requirements: Req 5 (Utility Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with understanding of CLI conventions and silent operations | Task: Implement "rehash" command following Requirement 5 and design.md Component 8 rehash pattern, with no output on success (pyenv-win convention) | Restrictions: Must follow design.md Component 8 pattern, completely silent on success, no arguments, placeholder logic only | Success: `mvnenv rehash` completes silently with exit code 0, no output displayed | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 14. Implement "which" command
-  - Files: `cmd/mvnenv/which.go`
+- [x] 14. Implement "which" command
+  - Files: `cmd/mvnenv/cmd/which.go`
   - Create NewWhichCmd() requiring exactly one argument
-  - Implement runWhich() to show command path (placeholder)
+  - Implement runWhich() to show command path
   - Use cobra.ExactArgs(1) for validation
   - Add command to root in main.go
   - Purpose: Display full path to an executable in current Maven
@@ -149,10 +149,10 @@
   - _Requirements: Req 5 (Utility Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in argument validation and path operations | Task: Implement "which" command following Requirement 5 and design.md Component 8 which pattern, displaying executable path with placeholder logic | Restrictions: Must follow design.md Component 8 pattern, use cobra.ExactArgs(1), output full Windows path with backslashes, plain text only | Success: `mvnenv which mvn` displays path like "C:\\Users\\user\\.mvnenv\\versions\\3.9.4\\bin\\mvn.cmd", proper error if no argument | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 15. Implement "latest" command
-  - Files: `cmd/mvnenv/latest.go`
+- [x] 15. Implement "latest" command
+  - Files: `cmd/mvnenv/cmd/latest.go`
   - Create NewLatestCmd() with optional prefix argument
-  - Implement runLatest() to show latest version (placeholder)
+  - Implement runLatest() to show latest version with --remote flag support
   - Use cobra.MaximumNArgs(1) for optional prefix
   - Add command to root in main.go
   - Purpose: Show latest installed or known version matching optional prefix
