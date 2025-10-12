@@ -8,9 +8,14 @@ import (
 var uninstallCmd = &cobra.Command{
 	Use:   "uninstall <version>",
 	Short: "Uninstall a Maven version",
-	Long:  `Remove an installed Maven version.`,
-	Args:  cobra.ExactArgs(1),
-	RunE:  runUninstall,
+	Long: `Remove an installed Maven version.
+
+Removes the specified Maven version from the mvnenv versions directory.
+This frees up disk space and removes the version from the available versions list.`,
+	Example: `  mvnenv uninstall 3.8.6
+  mvnenv uninstall 3.9.4`,
+	Args: cobra.ExactArgs(1),
+	RunE: runUninstall,
 }
 
 func init() {

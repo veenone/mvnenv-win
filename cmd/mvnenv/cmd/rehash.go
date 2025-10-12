@@ -10,8 +10,13 @@ import (
 var rehashCmd = &cobra.Command{
 	Use:   "rehash",
 	Short: "Regenerate shim executables",
-	Long:  `Regenerate shim executables for all Maven commands. Run this after installing or uninstalling Maven versions.`,
-	RunE:  runRehash,
+	Long: `Regenerate shim executables for all Maven commands.
+
+Run this command after installing or uninstalling Maven versions to rebuild
+the shim files that intercept Maven commands. This is typically done automatically
+but can be run manually if needed.`,
+	Example: `  mvnenv rehash`,
+	RunE:    runRehash,
 }
 
 func init() {

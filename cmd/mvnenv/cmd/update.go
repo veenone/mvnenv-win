@@ -12,8 +12,12 @@ import (
 var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Update the cached list of available Maven versions",
-	Long:  `Fetches the latest list of available Maven versions from Apache archive and updates the local cache.`,
-	RunE:  runUpdate,
+	Long: `Fetches the latest list of available Maven versions from Apache archive and updates the local cache.
+
+This command refreshes the cached version list used by the install -l command.
+Run this periodically to see newly released Maven versions.`,
+	Example: `  mvnenv update`,
+	RunE:    runUpdate,
 }
 
 func init() {

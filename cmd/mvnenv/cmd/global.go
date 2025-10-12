@@ -11,9 +11,14 @@ import (
 var globalCmd = &cobra.Command{
 	Use:   "global <version>",
 	Short: "Set the global Maven version",
-	Long:  `Set the global Maven version that will be used by default in all directories.`,
-	Args:  cobra.ExactArgs(1),
-	RunE:  runGlobal,
+	Long: `Set the global Maven version that will be used by default in all directories.
+
+The global version is stored in the mvnenv configuration file and serves as
+the fallback when no local or shell version is set.`,
+	Example: `  mvnenv global 3.9.4
+  mvnenv global 3.8.6`,
+	Args: cobra.ExactArgs(1),
+	RunE: runGlobal,
 }
 
 func init() {

@@ -10,8 +10,12 @@ import (
 var versionsCmd = &cobra.Command{
 	Use:   "versions",
 	Short: "List all installed Maven versions",
-	Long:  `Display all Maven versions that are currently installed.`,
-	RunE:  runVersions,
+	Long: `Display all Maven versions that are currently installed.
+
+Lists all installed Maven versions with the currently active version
+marked with an asterisk (*).`,
+	Example: `  mvnenv versions`,
+	RunE:    runVersions,
 }
 
 func init() {

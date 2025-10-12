@@ -12,23 +12,35 @@ import (
 )
 
 var (
-	installList bool
+	installList  bool
+	installQuiet bool
 )
 
 var installCmd = &cobra.Command{
 	Use:   "install [version]",
 	Short: "Install a Maven version",
-	Long:  `Download and install a specific Maven version.`,
-	RunE:  runInstall,
+	Long: `Download and install a specific Maven version from Apache archive.
+
+Downloads the specified Maven version, verifies its checksum, and installs
+it to the mvnenv versions directory. Use the -l flag to list all available
+versions.`,
+	Example: `  mvnenv install 3.9.4
+  mvnenv install -l
+  mvnenv install -q 3.8.6`,
+	RunE: runInstall,
 }
 
 func init() {
 	installCmd.Flags().BoolVarP(&installList, "list", "l", false, "List available versions")
+	installCmd.Flags().BoolVarP(&installQuiet, "quiet", "q", false, "Suppress output")
 	rootCmd.AddCommand(installCmd)
 }
 
 func runInstall(cmd *cobra.Command, args []string) error {
 	mvnenvRoot := getMvnenvRoot()
+
+	// Set quiet mode
+	quietMode = installQuiet
 
 	// Handle list flag
 	if installList {

@@ -11,9 +11,15 @@ import (
 var localCmd = &cobra.Command{
 	Use:   "local <version>",
 	Short: "Set the local Maven version",
-	Long:  `Set the Maven version for the current directory by creating a .maven-version file.`,
-	Args:  cobra.ExactArgs(1),
-	RunE:  runLocal,
+	Long: `Set the Maven version for the current directory by creating a .maven-version file.
+
+This creates a .maven-version file in the current directory that specifies
+which Maven version to use. This setting takes precedence over the global
+version but is overridden by the shell version.`,
+	Example: `  mvnenv local 3.8.6
+  mvnenv local 3.9.4`,
+	Args: cobra.ExactArgs(1),
+	RunE: runLocal,
 }
 
 func init() {

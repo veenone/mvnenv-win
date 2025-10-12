@@ -122,6 +122,20 @@ mvnenv version
 # Show path to Maven executable
 mvnenv which mvn
 
+# Find latest installed version
+mvnenv latest
+mvnenv latest 3.9        # Latest 3.9.x version
+
+# Find latest available version
+mvnenv latest --remote
+mvnenv latest --remote 3.8
+
+# Update version cache
+mvnenv update
+
+# Regenerate shims
+mvnenv rehash
+
 # List all available commands
 mvnenv commands
 
@@ -144,9 +158,11 @@ mvnenv-win uses the following directory structure in `%USERPROFILE%\.mvnenv\`:
 │   ├── mvn.cmd
 │   ├── mvnDebug.exe
 │   └── mvnDebug.cmd
-├── cache/          # Downloaded Maven archives
+├── cache/          # Downloaded Maven archives and version cache
+│   ├── apache-maven-3.9.4-bin.zip
+│   └── versions.json           # Cached list of available versions
 ├── config/         # Configuration files
-│   └── config.yaml # Global configuration
+│   └── config.yaml             # Global configuration
 └── versions/       # Installed Maven versions
     ├── 3.8.6/
     ├── 3.9.4/
@@ -163,6 +179,17 @@ When you run a Maven command, mvnenv resolves the version in this order:
 2. Look for `.maven-version` file in current directory and parent directories
 3. Use global version from config.yaml
 4. Error if no version is set
+
+## Version Cache
+
+mvnenv caches the list of available Maven versions from Apache archive to improve performance:
+
+- Cache is automatically created when you run `mvnenv install -l`
+- Cache is valid for 24 hours before being automatically refreshed
+- Use `mvnenv update` to manually refresh the cache
+- The `mvnenv latest --remote` command also uses the cache
+
+This reduces network calls and speeds up version listing operations.
 
 ## Requirements
 

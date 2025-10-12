@@ -20,11 +20,15 @@ var latestCmd = &cobra.Command{
 	Short: "Show the latest Maven version matching optional prefix",
 	Long: `Show the latest installed Maven version, or with --remote flag, the latest available version.
 
-Examples:
-  mvnenv latest          # Latest installed version
-  mvnenv latest 3.9      # Latest installed 3.9.x version
-  mvnenv latest --remote # Latest available version from Apache archive
-  mvnenv latest --remote 3.8 # Latest available 3.8.x version`,
+Without any arguments, shows the latest installed version. Use the optional
+prefix argument to filter versions (e.g., "3.8" for latest 3.8.x version).
+
+Use --remote flag to check the latest available version from Apache archive
+instead of installed versions.`,
+	Example: `  mvnenv latest
+  mvnenv latest 3.9
+  mvnenv latest --remote
+  mvnenv latest --remote 3.8`,
 	Args: cobra.MaximumNArgs(1),
 	RunE: runLatest,
 }

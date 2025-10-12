@@ -9,8 +9,12 @@ import (
 var commandsCmd = &cobra.Command{
 	Use:   "commands",
 	Short: "List all available mvnenv commands",
-	Long:  `Display a list of all available mvnenv commands.`,
-	RunE:  runCommands,
+	Long: `Display a list of all available mvnenv commands.
+
+This command lists all mvnenv commands available for use, one per line.
+Useful for command discovery and scripting.`,
+	Example: `  mvnenv commands`,
+	RunE:    runCommands,
 }
 
 func init() {

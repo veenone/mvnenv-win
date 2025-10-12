@@ -10,8 +10,14 @@ import (
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Show the current Maven version and origin",
-	Long:  `Display the currently active Maven version and where it was set from (shell, local, or global).`,
-	RunE:  runVersion,
+	Long: `Display the currently active Maven version and where it was set from.
+
+Shows the Maven version currently in use and its source:
+  - shell: Set via MVNENV_MAVEN_VERSION environment variable
+  - local: Set via .maven-version file in current or parent directory
+  - global: Set via global configuration`,
+	Example: `  mvnenv version`,
+	RunE:    runVersion,
 }
 
 func init() {

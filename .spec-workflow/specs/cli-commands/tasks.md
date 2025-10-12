@@ -160,7 +160,7 @@
   - _Requirements: Req 5 (Utility Commands)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in version comparison and filtering | Task: Implement "latest" command following Requirement 5 and design.md Component 8 latest pattern, showing latest version with optional prefix filter using placeholder logic | Restrictions: Must follow design.md Component 8 pattern, use cobra.MaximumNArgs(1), support optional prefix like "3.8", plain text output | Success: `mvnenv latest` shows "3.9.4", `mvnenv latest 3.8` shows "3.8.6" (placeholder), proper version filtering logic structure | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 16. Create error handling utilities
+- [x] 16. Create error handling utilities
   - Files: `cmd/mvnenv/errors.go`
   - Implement formatError() function for consistent "Error: " prefix
   - Define common error variables (ErrVersionNotInstalled, etc.)
@@ -170,7 +170,7 @@
   - _Requirements: Req 8 (Error Handling), Req 9 (Output Formatting)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in error handling patterns and consistent error messaging | Task: Create error handling utilities following Requirements 8 and 9 and design.md Error Handling section, providing consistent error formatting and common error types | Restrictions: Must follow design.md error patterns exactly, all errors must have "Error: " prefix, use stderr for errors, define exported error variables | Success: Error formatting functions work correctly, common errors defined, consistent "Error: " prefix, proper stderr output | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 17. Create output utilities
+- [x] 17. Create output utilities
   - Files: `cmd/mvnenv/output.go`
   - Implement shouldPrint() helper for --quiet flag checking
   - Create printVersion(), printVersionList() formatters
@@ -279,7 +279,7 @@
   - _Requirements: All requirements (user experience validation)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: QA Automation Engineer specializing in user acceptance testing and E2E test design | Task: Create end-to-end test scenarios following design.md End-to-End Testing section, testing complete user workflows and help discovery | Restrictions: Must test realistic user scenarios, verify help system usability, test error recovery, ensure tests are maintainable | Success: E2E tests pass covering critical user journeys, help discovery works, error recovery verified, tests are reliable | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 27. Add command help text and examples
+- [x] 27. Add command help text and examples
   - Files: All command files (`cmd/mvnenv/*.go`)
   - Add comprehensive help text to all commands
   - Include usage examples in Long descriptions
@@ -290,7 +290,7 @@
   - _Requirements: Req 6 (Help System)_
   - _Prompt: Implement the task for spec cli-commands, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Technical Writer with expertise in CLI documentation and user assistance | Task: Add comprehensive help text and examples to all commands following Requirement 6 and design.md Help System section, ensuring clarity and consistency | Restrictions: Must include usage, short, long descriptions with examples, describe all flags, follow pyenv-win help style, plain text only | Success: All commands have complete help text, examples included, --help output is clear and helpful, consistent style across commands | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 28. Create README documentation
+- [x] 28. Create README documentation
   - Files: `README.md`
   - Document all commands with examples
   - Add installation instructions (placeholder)

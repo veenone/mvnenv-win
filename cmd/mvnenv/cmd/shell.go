@@ -11,11 +11,16 @@ var shellCmd = &cobra.Command{
 	Use:   "shell <version>",
 	Short: "Set the shell-specific Maven version",
 	Long: `Set the Maven version for the current shell session.
-This sets the MVNENV_MAVEN_VERSION environment variable.
 
-To use this command, you need to set the environment variable in your shell:
+This command displays instructions for setting the MVNENV_MAVEN_VERSION
+environment variable. The shell version takes precedence over both local
+and global versions.
+
+After running this command, you need to set the environment variable manually:
   PowerShell: $env:MVNENV_MAVEN_VERSION = "3.9.4"
   cmd.exe: set MVNENV_MAVEN_VERSION=3.9.4`,
+	Example: `  mvnenv shell 3.9.4
+  mvnenv shell 3.6.3`,
 	Args: cobra.ExactArgs(1),
 	RunE: runShell,
 }

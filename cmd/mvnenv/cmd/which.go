@@ -11,9 +11,14 @@ import (
 var whichCmd = &cobra.Command{
 	Use:   "which <command>",
 	Short: "Display the path to the Maven executable",
-	Long:  `Show the full path to the Maven executable for the currently active version.`,
-	Args:  cobra.ExactArgs(1),
-	RunE:  runWhich,
+	Long: `Show the full path to the Maven executable for the currently active version.
+
+Displays the full Windows path to the specified Maven command executable
+based on the currently active version.`,
+	Example: `  mvnenv which mvn
+  mvnenv which mvnDebug`,
+	Args: cobra.ExactArgs(1),
+	RunE: runWhich,
 }
 
 func init() {
