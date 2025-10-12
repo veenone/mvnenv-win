@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/veenone/mvnenv-win/internal/cache"
 	"github.com/veenone/mvnenv-win/internal/repository"
 	versionpkg "github.com/veenone/mvnenv-win/internal/version"
 	"github.com/veenone/mvnenv-win/pkg/maven"
@@ -50,12 +52,37 @@ func runInstall(cmd *cobra.Command, args []string) error {
 }
 
 func listAvailableVersions() error {
-	fmt.Println("Fetching available versions from Apache archive...")
+	mvnenvRoot := getMvnenvRoot()
+	cacheManager := cache.NewManager(mvnenvRoot)
 
-	archive := repository.NewApacheArchive()
-	versions, err := archive.ListVersions()
-	if err != nil {
-		return fmt.Errorf("failed to list versions: %w", err)
+	// Try to load from cache first
+	versions, err := cacheManager.LoadVersions()
+
+	// If cache doesn't exist or is stale (>24 hours), fetch from Apache
+	if err != nil || len(versions) == 0 || cacheManager.IsCacheStale(24*time.Hour) {
+		fmt.Println("Fetching available versions from Apache archive...")
+
+		archive := repository.NewApacheArchive()
+		versions, err = archive.ListVersions()
+		if err != nil {
+			return fmt.Errorf("failed to list versions: %w", err)
+		}
+
+		// Sort versions (newest first)
+		versions, err = maven.SortVersions(versions)
+		if err != nil {
+			// If sorting fails, use unsorted
+			fmt.Printf("Warning: Failed to sort versions: %v\n", err)
+		}
+
+		// Save to cache
+		if saveErr := cacheManager.SaveVersions(versions); saveErr != nil {
+			fmt.Printf("Warning: Failed to save cache: %v\n", saveErr)
+		}
+	} else {
+		age, _ := cacheManager.GetCacheAge()
+		fmt.Printf("Using cached versions (updated %v ago)\n", age.Round(time.Minute))
+		fmt.Println("Run 'mvnenv update' to refresh the cache")
 	}
 
 	if len(versions) == 0 {
@@ -63,15 +90,8 @@ func listAvailableVersions() error {
 		return nil
 	}
 
-	// Sort versions (newest first)
-	sorted, err := maven.SortVersions(versions)
-	if err != nil {
-		// If sorting fails, use unsorted
-		sorted = versions
-	}
-
 	fmt.Printf("\nAvailable Maven versions:\n")
-	for _, v := range sorted {
+	for _, v := range versions {
 		fmt.Printf("  %s\n", v)
 	}
 

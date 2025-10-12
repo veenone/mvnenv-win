@@ -1,0 +1,50 @@
+package cmd
+
+import (
+	"fmt"
+
+	"github.com/spf13/cobra"
+	"github.com/veenone/mvnenv-win/internal/cache"
+	"github.com/veenone/mvnenv-win/internal/repository"
+	"github.com/veenone/mvnenv-win/pkg/maven"
+)
+
+var updateCmd = &cobra.Command{
+	Use:   "update",
+	Short: "Update the cached list of available Maven versions",
+	Long:  `Fetches the latest list of available Maven versions from Apache archive and updates the local cache.`,
+	RunE:  runUpdate,
+}
+
+func init() {
+	rootCmd.AddCommand(updateCmd)
+}
+
+func runUpdate(cmd *cobra.Command, args []string) error {
+	mvnenvRoot := getMvnenvRoot()
+
+	fmt.Println("Fetching available Maven versions from Apache archive...")
+
+	// Fetch versions from Apache
+	archive := repository.NewApacheArchive()
+	versions, err := archive.ListVersions()
+	if err != nil {
+		return formatError(err)
+	}
+
+	// Sort versions (newest first)
+	sortedVersions, err := maven.SortVersions(versions)
+	if err != nil {
+		return formatError(fmt.Errorf("sort versions: %w", err))
+	}
+
+	// Save to cache
+	cacheManager := cache.NewManager(mvnenvRoot)
+	if err := cacheManager.SaveVersions(sortedVersions); err != nil {
+		return formatError(fmt.Errorf("save cache: %w", err))
+	}
+
+	fmt.Printf("Successfully updated cache with %d Maven versions\n", len(sortedVersions))
+
+	return nil
+}
