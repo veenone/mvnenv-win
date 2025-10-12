@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var version string
+var appVersion string
 
 var rootCmd = &cobra.Command{
 	Use:   "mvnenv",
@@ -24,7 +24,7 @@ func Execute() error {
 
 // SetVersion sets the application version
 func SetVersion(v string) {
-	version = v
+	appVersion = v
 	rootCmd.Version = v
 }
 
