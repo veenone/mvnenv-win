@@ -1,0 +1,21 @@
+{
+  "id": "approval_1760198351356_oc0rcmqo9",
+  "title": "CLI Commands - Requirements Document",
+  "filePath": ".spec-workflow/specs/cli-commands/requirements.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-10-11T15:59:11.356Z",
+  "category": "spec",
+  "categoryName": "cli-commands",
+  "response": "Feedback Summary (1 comments):\n\nGeneral Comments:\n1. implement similar arguments used in pyenv-win, and avoid having emojis inside any cli stdout\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"implement similar arguments used in pyenv-win, and avoid having emojis inside any cli stdout\",\n      \"timestamp\": \"2025-10-12T00:55:50.303Z\",\n      \"id\": \"comment_1760230550303_wwbijej9d\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nGeneral Comments:\\n1. implement similar arguments used in pyenv-win, and avoid having emojis inside any cli stdout\\n\\n\",\n  \"timestamp\": \"2025-10-12T00:55:52.468Z\"\n}",
+  "respondedAt": "2025-10-12T00:55:52.827Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "implement similar arguments used in pyenv-win, and avoid having emojis inside any cli stdout",
+      "timestamp": "2025-10-12T00:55:50.303Z",
+      "id": "comment_1760230550303_wwbijej9d"
+    }
+  ]
+}

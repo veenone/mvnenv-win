@@ -145,17 +145,27 @@ func (r *VersionResolver) getGlobalVersion() (string, bool) {
 	return version, true
 }
 
-// isVersionInstalled checks if a Maven version is installed
-func (r *VersionResolver) isVersionInstalled(version string) bool {
-	versionPath := r.getVersionPath(version)
+// IsVersionInstalled checks if a Maven version is installed
+func (r *VersionResolver) IsVersionInstalled(version string) bool {
+	versionPath := r.GetVersionPath(version)
 	mvnCmd := filepath.Join(versionPath, "bin", "mvn.cmd")
 	_, err := os.Stat(mvnCmd)
 	return err == nil
 }
 
-// getVersionPath returns the installation path for a version
-func (r *VersionResolver) getVersionPath(version string) string {
+// GetVersionPath returns the installation path for a version
+func (r *VersionResolver) GetVersionPath(version string) string {
 	return filepath.Join(r.mvnenvRoot, "versions", version)
+}
+
+// isVersionInstalled is a private wrapper
+func (r *VersionResolver) isVersionInstalled(version string) bool {
+	return r.IsVersionInstalled(version)
+}
+
+// getVersionPath is a private wrapper
+func (r *VersionResolver) getVersionPath(version string) string {
+	return r.GetVersionPath(version)
 }
 
 // VersionError wraps version resolution errors with context

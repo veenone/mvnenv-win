@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/steering/structure.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-11T15:49:05.591Z",
+      "trigger": "initial",
+      "approvalId": "approval_1760197745561_kg9l20vth",
+      "approvalTitle": "Structure Steering Document (structure.md)"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-11T15:53:23.762Z",
+      "trigger": "approved",
+      "approvalId": "approval_1760197745561_kg9l20vth",
+      "approvalTitle": "Structure Steering Document (structure.md)"
+    }
+  ]
+}

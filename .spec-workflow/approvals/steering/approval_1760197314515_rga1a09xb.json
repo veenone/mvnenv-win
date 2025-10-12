@@ -1,0 +1,21 @@
+{
+  "id": "approval_1760197314515_rga1a09xb",
+  "title": "Technical Steering Document (tech.md)",
+  "filePath": ".spec-workflow/steering/tech.md",
+  "type": "document",
+  "status": "needs-revision",
+  "createdAt": "2025-10-11T15:41:54.515Z",
+  "category": "steering",
+  "categoryName": "steering",
+  "response": "Feedback Summary (1 comments):\n\nGeneral Comments:\n1. update installation requirements to be able to download maven installer from nexus repo\n\n",
+  "annotations": "{\n  \"decision\": \"needs-revision\",\n  \"comments\": [\n    {\n      \"type\": \"general\",\n      \"comment\": \"update installation requirements to be able to download maven installer from nexus repo\",\n      \"timestamp\": \"2025-10-11T15:44:39.487Z\",\n      \"id\": \"comment_1760197479487_1ww7e6w5b\"\n    }\n  ],\n  \"summary\": \"Feedback Summary (1 comments):\\n\\nGeneral Comments:\\n1. update installation requirements to be able to download maven installer from nexus repo\\n\\n\",\n  \"timestamp\": \"2025-10-11T15:45:58.244Z\"\n}",
+  "respondedAt": "2025-10-11T15:45:58.636Z",
+  "comments": [
+    {
+      "type": "general",
+      "comment": "update installation requirements to be able to download maven installer from nexus repo",
+      "timestamp": "2025-10-11T15:44:39.487Z",
+      "id": "comment_1760197479487_1ww7e6w5b"
+    }
+  ]
+}

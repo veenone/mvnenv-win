@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/core-version-management/tasks.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-12T03:40:30.642Z",
+      "trigger": "initial",
+      "approvalId": "approval_1760240430570_7wd5zywm3",
+      "approvalTitle": "Core Version Management - Tasks Document"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-12T03:45:44.269Z",
+      "trigger": "approved",
+      "approvalId": "approval_1760240430570_7wd5zywm3",
+      "approvalTitle": "Core Version Management - Tasks Document"
+    }
+  ]
+}

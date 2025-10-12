@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/shim-system-implementation/tasks.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-12T13:35:49.151Z",
+      "trigger": "initial",
+      "approvalId": "approval_1760276149024_ptgczy1d9",
+      "approvalTitle": "Shim System Implementation - Tasks Document"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-12T13:48:11.756Z",
+      "trigger": "approved",
+      "approvalId": "approval_1760276149024_ptgczy1d9",
+      "approvalTitle": "Shim System Implementation - Tasks Document"
+    }
+  ]
+}

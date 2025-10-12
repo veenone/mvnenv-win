@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/shim-system-implementation/design.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-12T07:21:28.290Z",
+      "trigger": "initial",
+      "approvalId": "approval_1760253688139_pl14pvyn1",
+      "approvalTitle": "Shim System Implementation - Design Document"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-12T13:32:33.150Z",
+      "trigger": "approved",
+      "approvalId": "approval_1760253688139_pl14pvyn1",
+      "approvalTitle": "Shim System Implementation - Design Document"
+    }
+  ]
+}

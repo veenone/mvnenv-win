@@ -1,0 +1,30 @@
+{
+  "filePath": ".spec-workflow/specs/cli-commands/tasks.md",
+  "currentVersion": 3,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-12T02:30:33.970Z",
+      "trigger": "initial",
+      "approvalId": "approval_1760236233900_wgplrm7v9",
+      "approvalTitle": "CLI Commands - Tasks Document"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-12T02:32:01.999Z",
+      "trigger": "revision_requested",
+      "approvalId": "approval_1760236233900_wgplrm7v9",
+      "approvalTitle": "CLI Commands - Tasks Document"
+    },
+    {
+      "version": 3,
+      "filename": "snapshot-003.json",
+      "timestamp": "2025-10-12T03:22:18.427Z",
+      "trigger": "approved",
+      "approvalId": "approval_1760236500254_bh1xjgfw2",
+      "approvalTitle": "CLI Commands - Tasks Document (Revised)"
+    }
+  ]
+}

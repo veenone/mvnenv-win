@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/shim-system-implementation/requirements.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-12T07:14:45.588Z",
+      "trigger": "initial",
+      "approvalId": "approval_1760253285461_6fp4ruxpi",
+      "approvalTitle": "Shim System Implementation - Requirements Document"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-12T07:18:56.329Z",
+      "trigger": "approved",
+      "approvalId": "approval_1760253285461_6fp4ruxpi",
+      "approvalTitle": "Shim System Implementation - Requirements Document"
+    }
+  ]
+}

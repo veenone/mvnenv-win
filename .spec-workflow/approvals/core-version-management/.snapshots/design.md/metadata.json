@@ -1,0 +1,22 @@
+{
+  "filePath": ".spec-workflow/specs/core-version-management/design.md",
+  "currentVersion": 2,
+  "snapshots": [
+    {
+      "version": 1,
+      "filename": "snapshot-001.json",
+      "timestamp": "2025-10-12T03:33:43.381Z",
+      "trigger": "initial",
+      "approvalId": "approval_1760240023349_kbsrqvttf",
+      "approvalTitle": "Core Version Management - Design Document"
+    },
+    {
+      "version": 2,
+      "filename": "snapshot-002.json",
+      "timestamp": "2025-10-12T03:36:06.213Z",
+      "trigger": "approved",
+      "approvalId": "approval_1760240023349_kbsrqvttf",
+      "approvalTitle": "Core Version Management - Design Document"
+    }
+  ]
+}
