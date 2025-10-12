@@ -11,7 +11,10 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nAdd project foundation and core components\n\n- Add VERSION file for version management\n- Add main entry point with version embedding support\n- Add Cobra CLI framework with root command\n- Add Maven version parsing and comparison utilities\n- Add configuration management (config.yaml)\n- Add version resolver with shell > local > global hierarchy\n- Add basic CLI commands: version, commands, which\n- Add go.mod with required dependencies\n- Add .gitignore for Go project\nEOF\n)\")",
       "Bash(git commit:*)",
       "Bash(go mod:*)",
-      "Bash(./bin/mvnenv.exe:*)"
+      "Bash(./bin/mvnenv.exe:*)",
+      "Bash(go build:*)",
+      "Bash(ls:*)",
+      "Bash($HOME/.mvnenv/shims/mvn.exe:*)"
     ],
     "deny": [],
     "ask": []

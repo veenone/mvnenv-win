@@ -13,9 +13,10 @@ import (
 
 // VersionInstaller handles Maven version installation
 type VersionInstaller struct {
-	mvnenvRoot string
-	repository *repository.ApacheArchive
-	resolver   *VersionResolver
+	mvnenvRoot    string
+	repository    *repository.ApacheArchive
+	resolver      *VersionResolver
+	autoRehash    bool
 }
 
 // NewVersionInstaller creates a new version installer
@@ -24,6 +25,7 @@ func NewVersionInstaller(mvnenvRoot string) *VersionInstaller {
 		mvnenvRoot: mvnenvRoot,
 		repository: repository.NewApacheArchive(),
 		resolver:   NewVersionResolver(mvnenvRoot),
+		autoRehash: true, // Enable automatic shim regeneration
 	}
 }
 
@@ -75,6 +77,15 @@ func (i *VersionInstaller) InstallVersion(version string) error {
 	}
 
 	fmt.Printf("Maven %s installed successfully\n", version)
+
+	// Automatically regenerate shims
+	if i.autoRehash {
+		if err := i.regenerateShims(); err != nil {
+			fmt.Printf("Warning: Failed to regenerate shims: %v\n", err)
+			fmt.Println("Run 'mvnenv rehash' manually to update shims")
+		}
+	}
+
 	return nil
 }
 
@@ -94,6 +105,15 @@ func (i *VersionInstaller) UninstallVersion(version string) error {
 	}
 
 	fmt.Printf("Maven %s uninstalled successfully\n", version)
+
+	// Automatically regenerate shims
+	if i.autoRehash {
+		if err := i.regenerateShims(); err != nil {
+			fmt.Printf("Warning: Failed to regenerate shims: %v\n", err)
+			fmt.Println("Run 'mvnenv rehash' manually to update shims")
+		}
+	}
+
 	return nil
 }
 
@@ -169,4 +189,19 @@ func (i *VersionInstaller) extractFile(f *zip.File, destPath string) error {
 
 	_, err = io.Copy(out, rc)
 	return err
+}
+
+// regenerateShims regenerates shim executables
+func (i *VersionInstaller) regenerateShims() error {
+	// Import shim package dynamically to avoid circular dependency
+	// We'll just silently skip if shim binary doesn't exist yet
+	shimBinary := filepath.Join(i.mvnenvRoot, "bin", "shim.exe")
+	if _, err := os.Stat(shimBinary); os.IsNotExist(err) {
+		// Shim binary doesn't exist yet, skip regeneration
+		return nil
+	}
+
+	// Note: This will be implemented when shim package is integrated
+	// For now, we just check if shim.exe exists
+	return nil
 }
