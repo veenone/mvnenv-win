@@ -2,7 +2,7 @@
 
 ## Implementation Tasks for core-version-management Spec
 
-- [ ] 1. Create Maven version structures in pkg/maven
+- [x] 1. Create Maven version structures in pkg/maven
   - Files: `pkg/maven/version.go`
   - Define Version struct (Major, Minor, Patch, Qualifier)
   - Implement ParseVersion() function
@@ -12,7 +12,7 @@
   - _Requirements: Req 9 (Get Latest Version - comparison logic)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in semantic versioning and data structures | Task: Create pkg/maven/version.go implementing Version struct and semantic version parsing/comparison following design.md Component 5, supporting Maven version formats (X.Y.Z and X.Y.Z-qualifier) | Restrictions: Must handle qualifiers (alpha, beta, RC), use semantic versioning rules, export all types and functions, no external dependencies beyond stdlib | Success: ParseVersion("3.9.4") works, Compare() correctly orders versions, qualifiers handled properly, unit tests pass | Instructions: After completing, edit tasks.md and change this task from [ ] to [x]_
 
-- [ ] 2. Create Maven path utilities in pkg/maven
+- [x] 2. Create Maven path utilities in pkg/maven
   - Files: `pkg/maven/paths.go`
   - Implement GetMavenBinaryPath() for bin/mvn.cmd location
   - Implement GetMavenHome() for Maven installation root
@@ -22,7 +22,7 @@
   - _Requirements: Req 1 (Installation verification), Req 3 (List installed)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in file path handling and Windows conventions | Task: Create pkg/maven/paths.go with Maven installation path utilities following design.md, using Windows-style paths and validating Maven directory structure | Restrictions: Must use filepath package, handle Windows backslashes, check for bin/mvn.cmd existence, export all functions | Success: GetMavenBinaryPath() returns correct Windows path, ValidateMavenInstallation() detects valid/invalid installations, paths use backslashes | Instructions: After completing, edit tasks.md and change this task from [ ] to [x]_
 
-- [ ] 3. Create download manager in internal/download
+- [x] 3. Create download manager in internal/download
   - Files: `internal/download/downloader.go`, `internal/download/checksum.go`
   - Implement Downloader interface with HTTP download and progress tracking
   - Implement ChecksumVerifier for SHA-256 verification
@@ -32,7 +32,7 @@
   - _Requirements: Req 1 (Install with checksum verification)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in HTTP operations and file integrity | Task: Create internal/download package with Downloader and ChecksumVerifier following design.md, supporting HTTP downloads with SHA-256 verification, progress tracking, retries, and timeouts | Restrictions: Must verify all downloads with SHA-256, handle network errors gracefully, provide progress callbacks, no external HTTP libraries (use stdlib) | Success: Downloads work with progress, checksums verified correctly, failed downloads cleaned up, retries on transient errors | Instructions: After completing, edit tasks.md and change this task from [ ] to [x]_
 
-- [ ] 4. Create config package additions
+- [x] 4. Create config package additions
   - Files: `internal/config/config.go`, `internal/config/paths.go`
   - Add GlobalVersion field to Config struct
   - Implement GetGlobalVersion() and SetGlobalVersion() methods
@@ -42,7 +42,7 @@
   - _Requirements: Req 6 (Set Global Version)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in configuration management and YAML | Task: Extend internal/config package with global version support and path helpers following design.md, adding GlobalVersion field and path resolution methods | Restrictions: Must preserve existing config fields, use YAML for persistence, handle missing config file gracefully, use %USERPROFILE%/.mvnenv paths | Success: Global version can be get/set, config persists to YAML, path helpers return correct Windows paths, config loading doesn't break existing code | Instructions: After completing, edit tasks.md and change this task from [ ] to [x]_
 
-- [ ] 5. Create VersionResolver for version resolution
+- [x] 5. Create VersionResolver for version resolution
   - Files: `internal/version/resolver.go`
   - Implement VersionResolver struct with ResolveVersion() method
   - Implement shell > local > global hierarchy
@@ -53,7 +53,7 @@
   - _Requirements: Req 5 (Version Resolution)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in file system operations and environment variables | Task: Create internal/version/resolver.go implementing VersionResolver following design.md Component 2, with shell > local > global hierarchy, searching parent directories for .maven-version files | Restrictions: Must follow exact hierarchy (shell first, then local, then global), search up directory tree for .maven-version, verify version is installed before returning, handle missing config gracefully | Success: ResolveVersion() returns correct version based on hierarchy, shell env takes precedence, .maven-version found in parents, global from config works, uninstalled versions return error | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 6. Create VersionInstaller for install/uninstall
+- [x] 6. Create VersionInstaller for install/uninstall
   - Files: `internal/version/installer.go`
   - Implement VersionInstaller struct with Install() and Uninstall() methods
   - Add atomic installation with temp directory and rollback
@@ -64,7 +64,7 @@
   - _Requirements: Req 1 (Install), Req 2 (Uninstall)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer with expertise in file operations and atomic transactions | Task: Create internal/version/installer.go implementing VersionInstaller following design.md Component 3 and installation flow diagram, with atomic install (extract to temp, verify, move), checksum verification, and complete rollback on failure | Restrictions: Must be atomic (all-or-nothing), use temp directory during install, rollback completely on any error, verify Maven binary exists after extraction, handle Windows file locking | Success: Installation atomic with rollback, checksums verified, temp files cleaned up on failure, uninstall removes directory cleanly, already-installed detected | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 7. Create VersionLister for listing versions
+- [x] 7. Create VersionLister for listing versions
   - Files: `internal/version/lister.go`
   - Implement VersionLister struct with ListInstalled() and ListAvailable() methods
   - Add GetLatest() for finding latest version with optional prefix
@@ -74,7 +74,7 @@
   - _Requirements: Req 3 (List Installed), Req 4 (List Available), Req 9 (Get Latest)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Go Developer specializing in directory scanning and sorting algorithms | Task: Create internal/version/lister.go implementing VersionLister following design.md Component 4, scanning versions directory for installed versions, sorting by semantic version, finding latest with prefix support | Restrictions: Must validate each version directory (check for Maven binary), sort descending (newest first), handle empty versions directory, filter by prefix for GetLatest | Success: ListInstalled() scans directory correctly, versions sorted newest first, invalid directories skipped, GetLatest("3.8") returns newest 3.8.x version | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 8. Create VersionCache for caching available versions
+- [x] 8. Create VersionCache for caching available versions
   - Files: `internal/version/cache.go`
   - Implement VersionCache struct with Get() and Set() methods
   - Add timestamp-based TTL (24 hours default)
@@ -93,7 +93,7 @@
   - _Requirements: All requirements (orchestration layer)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: Software Architect specializing in API design and component orchestration | Task: Create internal/version/manager.go implementing VersionManager following design.md Component 1, composing Resolver, Installer, Lister, and Cache into unified API for CLI commands | Restrictions: Must delegate to specialized components (don't duplicate logic), provide clean public API, handle errors from components gracefully, initialize all components in NewVersionManager | Success: VersionManager provides all required methods, delegates correctly to components, CLI commands can use simple API, error handling consistent | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 10. Integrate VersionManager with CLI commands
+- [x] 10. Integrate VersionManager with CLI commands
   - Files: `cmd/mvnenv/version.go`, `cmd/mvnenv/versions.go`, `cmd/mvnenv/global.go`, `cmd/mvnenv/local.go`, `cmd/mvnenv/shell.go`, `cmd/mvnenv/install.go`, `cmd/mvnenv/uninstall.go`, `cmd/mvnenv/latest.go`, `cmd/mvnenv/update.go`
   - Replace placeholder logic in CLI commands with VersionManager calls
   - Initialize VersionManager in main.go for command access
@@ -212,7 +212,7 @@
   - _Requirements: All requirements (E2E validation)_
   - _Prompt: Implement the task for spec core-version-management, first run spec-workflow-guide to get the workflow guide then implement the task: Role: QA Automation Engineer specializing in end-to-end testing and user workflow validation | Task: Create E2E tests running complete version management workflows (install version, set global, verify active, switch to local, verify switch) using built mvnenv binary and temp environment | Restrictions: Must test realistic user scenarios, use actual CLI binary, temp isolated environment (%USERPROFILE% override), verify version switching works end-to-end, cleanup after tests | Success: E2E tests pass with real binary, install workflow works, global/local version setting verified, version switching tested, user experience validated | Instructions: Before starting, edit tasks.md and change this task from [ ] to [-]. After completing, change from [-] to [x]_
 
-- [ ] 21. Create error handling documentation
+- [x] 21. Create error handling documentation
   - Files: `internal/version/errors.go`
   - Define all error types (ErrVersionNotInstalled, ErrAlreadyInstalled, etc.)
   - Add error wrapping helpers for context

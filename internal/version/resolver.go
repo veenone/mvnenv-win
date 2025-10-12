@@ -1,7 +1,6 @@
 package version
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -24,12 +23,6 @@ const (
 	SourceShell  Source = "shell"
 	SourceLocal  Source = "local"
 	SourceGlobal Source = "global"
-)
-
-// Common errors
-var (
-	ErrNoVersionSet         = errors.New("no Maven version set")
-	ErrVersionNotInstalled  = errors.New("version not installed")
 )
 
 // VersionResolver resolves the active Maven version
@@ -96,7 +89,7 @@ func (r *VersionResolver) ResolveVersion() (*ResolvedVersion, error) {
 		}, nil
 	}
 
-	return nil, ErrNoVersionSet
+	return nil, NewNoVersionSetError("")
 }
 
 // getShellVersion reads version from MVNENV_MAVEN_VERSION environment variable
@@ -181,23 +174,4 @@ func (e *VersionError) Error() string {
 
 func (e *VersionError) Unwrap() error {
 	return e.Err
-}
-
-// IsVersionNotInstalledError checks if error is ErrVersionNotInstalled
-func IsVersionNotInstalledError(err error) bool {
-	return errors.Is(err, ErrVersionNotInstalled)
-}
-
-// IsNoVersionSetError checks if error is ErrNoVersionSet
-func IsNoVersionSetError(err error) bool {
-	return errors.Is(err, ErrNoVersionSet)
-}
-
-// ExtractVersionFromError extracts version string from VersionError
-func ExtractVersionFromError(err error) string {
-	var verErr *VersionError
-	if errors.As(err, &verErr) {
-		return verErr.Version
-	}
-	return ""
 }
