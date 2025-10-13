@@ -14,7 +14,8 @@
       "Bash(./bin/mvnenv.exe:*)",
       "Bash(go build:*)",
       "Bash(ls:*)",
-      "Bash($HOME/.mvnenv/shims/mvn.exe:*)"
+      "Bash($HOME/.mvnenv/shims/mvn.exe:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": []

@@ -122,3 +122,75 @@ mvn -version
 ```
 
 The `.maven-version` file in your project tells mvnenv which version to use.
+
+## Configuring Nexus Repository (Optional)
+
+If your organization uses a private Nexus Repository Manager, you can configure mvnenv to download Maven distributions from it.
+
+### 1. Create Configuration File
+
+Create or edit `%USERPROFILE%\.mvnenv\config\config.yaml`:
+
+```yaml
+version: "1.0"
+global_version: "3.9.11"
+auto_rehash: true
+
+nexus:
+  enabled: true
+  base_url: "https://nexus.example.com/repository/maven-public"
+  username: "your-username"
+  password: "your-password"
+```
+
+### 2. For Self-Signed Certificates
+
+If your Nexus server uses a self-signed certificate:
+
+```yaml
+nexus:
+  enabled: true
+  base_url: "https://nexus.internal.company.com/repository/maven-central"
+  username: "myuser"
+  password: "mypassword"
+  tls:
+    insecure_skip_verify: true
+```
+
+### 3. For Custom CA Certificates
+
+For enterprise environments with internal CA certificates:
+
+```yaml
+nexus:
+  enabled: true
+  base_url: "https://nexus.internal.company.com/repository/maven-central"
+  username: "myuser"
+  password: "mypassword"
+  tls:
+    ca_file: "C:\\company\\ca\\root-ca.pem"
+```
+
+### 4. Verify Nexus Integration
+
+After configuring Nexus:
+
+```bash
+# Update version cache (includes Nexus versions)
+mvnenv update
+
+# List available versions (shows versions from Nexus and Apache)
+mvnenv install -l
+
+# Install from Nexus (tries Nexus first, falls back to Apache)
+mvnenv install 3.9.4
+```
+
+### 5. Behavior with Nexus Enabled
+
+When Nexus is configured:
+- Version listings combine results from both Nexus and Apache archives
+- Downloads attempt Nexus first, then fall back to Apache if Nexus fails
+- If Nexus is temporarily unavailable, mvnenv continues with Apache archives
+
+For complete Nexus configuration documentation, see NEXUS.md in the repository.
