@@ -33,3 +33,8 @@ Thumbs.db
 /cache/
 /test-data/
 /.claude
+
+.claude/
+.spec-workflow/
+*prd*.md
+
