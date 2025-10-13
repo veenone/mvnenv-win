@@ -27,11 +27,11 @@ func init() {
 func runUpdate(cmd *cobra.Command, args []string) error {
 	mvnenvRoot := getMvnenvRoot()
 
-	fmt.Println("Fetching available Maven versions from Apache archive...")
+	fmt.Println("Fetching available Maven versions from configured repositories...")
 
-	// Fetch versions from Apache
-	archive := repository.NewApacheArchive()
-	versions, err := archive.ListVersions()
+	// Fetch versions from all repositories (Apache + Nexus if configured)
+	repoManager := repository.NewManager(mvnenvRoot)
+	versions, err := repoManager.ListVersions()
 	if err != nil {
 		return formatError(err)
 	}

@@ -70,12 +70,12 @@ func listAvailableVersions() error {
 	// Try to load from cache first
 	versions, err := cacheManager.LoadVersions()
 
-	// If cache doesn't exist or is stale (>24 hours), fetch from Apache
+	// If cache doesn't exist or is stale (>24 hours), fetch from repositories
 	if err != nil || len(versions) == 0 || cacheManager.IsCacheStale(24*time.Hour) {
-		fmt.Println("Fetching available versions from Apache archive...")
+		fmt.Println("Fetching available versions from configured repositories...")
 
-		archive := repository.NewApacheArchive()
-		versions, err = archive.ListVersions()
+		repoManager := repository.NewManager(mvnenvRoot)
+		versions, err = repoManager.ListVersions()
 		if err != nil {
 			return fmt.Errorf("failed to list versions: %w", err)
 		}

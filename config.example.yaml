@@ -1,0 +1,48 @@
+# mvnenv-win Configuration Example
+# This file should be placed at: %USERPROFILE%\.mvnenv\config\config.yaml
+
+version: "1.0"
+
+# Global Maven version (set with: mvnenv global <version>)
+global_version: "3.9.4"
+
+# Automatically regenerate shims after install/uninstall
+auto_rehash: true
+
+# Nexus Repository Configuration (optional)
+# Uncomment and configure to use a private Nexus repository
+# nexus:
+#   enabled: true
+#   base_url: "https://nexus.example.com/repository/maven-public"
+#   username: "your-username"
+#   password: "your-password"
+#   tls:
+#     # Set to true to skip certificate verification (for self-signed certificates)
+#     insecure_skip_verify: false
+#     # Path to custom CA certificate file
+#     ca_file: "C:\\path\\to\\ca-certificate.pem"
+
+# Example configurations:
+
+# For Nexus with self-signed certificate:
+# nexus:
+#   enabled: true
+#   base_url: "https://nexus.internal.company.com/repository/maven-central"
+#   username: "myuser"
+#   password: "mypassword"
+#   tls:
+#     insecure_skip_verify: true
+
+# For Nexus with custom CA certificate:
+# nexus:
+#   enabled: true
+#   base_url: "https://nexus.internal.company.com/repository/maven-central"
+#   username: "myuser"
+#   password: "mypassword"
+#   tls:
+#     ca_file: "C:\\company\\ca\\root-ca.pem"
+
+# For Nexus without authentication:
+# nexus:
+#   enabled: true
+#   base_url: "https://nexus.public.company.com/repository/maven-central"

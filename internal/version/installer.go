@@ -14,7 +14,7 @@ import (
 // VersionInstaller handles Maven version installation
 type VersionInstaller struct {
 	mvnenvRoot    string
-	repository    *repository.ApacheArchive
+	repoManager   *repository.Manager
 	resolver      *VersionResolver
 	autoRehash    bool
 }
@@ -22,10 +22,10 @@ type VersionInstaller struct {
 // NewVersionInstaller creates a new version installer
 func NewVersionInstaller(mvnenvRoot string) *VersionInstaller {
 	return &VersionInstaller{
-		mvnenvRoot: mvnenvRoot,
-		repository: repository.NewApacheArchive(),
-		resolver:   NewVersionResolver(mvnenvRoot),
-		autoRehash: true, // Enable automatic shim regeneration
+		mvnenvRoot:  mvnenvRoot,
+		repoManager: repository.NewManager(mvnenvRoot),
+		resolver:    NewVersionResolver(mvnenvRoot),
+		autoRehash:  true, // Enable automatic shim regeneration
 	}
 }
 
@@ -57,7 +57,7 @@ func (i *VersionInstaller) InstallVersion(version string) error {
 		}
 	}
 
-	if err := i.repository.DownloadVersion(version, archivePath, progress); err != nil {
+	if err := i.repoManager.DownloadVersion(version, archivePath, progress); err != nil {
 		return fmt.Errorf("download failed: %w", err)
 	}
 	fmt.Println() // New line after progress

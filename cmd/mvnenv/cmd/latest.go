@@ -55,10 +55,10 @@ func runLatest(cmd *cobra.Command, args []string) error {
 		// Try to load from cache first
 		versions, err = cacheManager.LoadVersions()
 		if err != nil || len(versions) == 0 {
-			// Cache doesn't exist or is empty, fetch from Apache
-			fmt.Println("Fetching versions from Apache archive...")
-			archive := repository.NewApacheArchive()
-			versions, err = archive.ListVersions()
+			// Cache doesn't exist or is empty, fetch from repositories
+			fmt.Println("Fetching versions from configured repositories...")
+			repoManager := repository.NewManager(mvnenvRoot)
+			versions, err = repoManager.ListVersions()
 			if err != nil {
 				return formatError(fmt.Errorf("fetch versions: %w", err))
 			}

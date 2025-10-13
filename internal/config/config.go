@@ -11,10 +11,26 @@ import (
 
 // Config represents the main configuration file structure
 type Config struct {
-	Version       string `yaml:"version"`
-	GlobalVersion string `yaml:"global_version,omitempty"`
-	AutoRehash    bool   `yaml:"auto_rehash"`
+	Version       string           `yaml:"version"`
+	GlobalVersion string           `yaml:"global_version,omitempty"`
+	AutoRehash    bool             `yaml:"auto_rehash"`
+	Nexus         *NexusConfig     `yaml:"nexus,omitempty"`
 	mu            sync.RWMutex
+}
+
+// NexusConfig represents Nexus repository configuration
+type NexusConfig struct {
+	Enabled  bool       `yaml:"enabled"`
+	BaseURL  string     `yaml:"base_url"`
+	Username string     `yaml:"username,omitempty"`
+	Password string     `yaml:"password,omitempty"`
+	TLS      *TLSConfig `yaml:"tls,omitempty"`
+}
+
+// TLSConfig represents TLS configuration
+type TLSConfig struct {
+	InsecureSkipVerify bool   `yaml:"insecure_skip_verify,omitempty"`
+	CAFile             string `yaml:"ca_file,omitempty"`
 }
 
 // Manager handles configuration file operations

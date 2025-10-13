@@ -13,6 +13,7 @@ mvnenv-win is a command-line tool for managing multiple Apache Maven installatio
 - **Simple CLI**: Familiar pyenv-style commands
 - **Native Windows**: Pure Go implementation, no WSL or Cygwin required
 - **Apache Maven Integration**: Direct downloads from official Apache Maven archives
+- **Nexus Repository Support**: Download from private Nexus repositories with authentication and custom SSL/TLS
 - **Checksum Verification**: SHA-512 checksum verification for downloaded files
 
 ## Installation
@@ -190,6 +191,54 @@ mvnenv caches the list of available Maven versions from Apache archive to improv
 - The `mvnenv latest --remote` command also uses the cache
 
 This reduces network calls and speeds up version listing operations.
+
+## Nexus Repository Integration
+
+mvnenv-win supports downloading Maven distributions from private Nexus Repository Manager instances. This is useful for enterprise environments that require using internal repositories.
+
+### Quick Setup
+
+Edit your configuration file at `%USERPROFILE%\.mvnenv\config\config.yaml`:
+
+```yaml
+nexus:
+  enabled: true
+  base_url: "https://nexus.example.com/repository/maven-public"
+  username: "your-username"
+  password: "your-password"
+```
+
+### Self-Signed Certificates
+
+For Nexus servers with self-signed certificates:
+
+```yaml
+nexus:
+  enabled: true
+  base_url: "https://nexus.internal.company.com/repository/maven-central"
+  username: "myuser"
+  password: "mypassword"
+  tls:
+    insecure_skip_verify: true
+```
+
+### Custom CA Certificate
+
+For corporate CA certificates:
+
+```yaml
+nexus:
+  enabled: true
+  base_url: "https://nexus.internal.company.com/repository/maven-central"
+  username: "myuser"
+  password: "mypassword"
+  tls:
+    ca_file: "C:\\company\\ca\\root-ca.pem"
+```
+
+**Note:** When Nexus is configured, mvnenv will try to download from Nexus first and automatically fall back to Apache Maven archives if Nexus is unavailable.
+
+See [NEXUS.md](NEXUS.md) for complete documentation on Nexus integration.
 
 ## Requirements
 
