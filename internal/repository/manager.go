@@ -37,23 +37,29 @@ func (m *Manager) initializeNexus() error {
 		return err
 	}
 
-	if cfg.Nexus == nil || !cfg.Nexus.Enabled {
+	// Check new structure first (repositories.nexus), fall back to old structure (nexus)
+	var nexusCfg *config.NexusConfig
+	if cfg.Repositories != nil && cfg.Repositories.Nexus != nil {
+		nexusCfg = cfg.Repositories.Nexus
+	}
+
+	if nexusCfg == nil || !nexusCfg.Enabled {
 		return nil
 	}
 
 	// Convert config TLS to nexus TLS
 	var tlsConfig *nexus.TLSConfig
-	if cfg.Nexus.TLS != nil {
+	if nexusCfg.TLS != nil {
 		tlsConfig = &nexus.TLSConfig{
-			InsecureSkipVerify: cfg.Nexus.TLS.InsecureSkipVerify,
-			CAFile:             cfg.Nexus.TLS.CAFile,
+			InsecureSkipVerify: nexusCfg.TLS.InsecureSkipVerify,
+			CAFile:             nexusCfg.TLS.CAFile,
 		}
 	}
 
 	client, err := nexus.NewClient(
-		cfg.Nexus.BaseURL,
-		cfg.Nexus.Username,
-		cfg.Nexus.Password,
+		nexusCfg.BaseURL,
+		nexusCfg.Username,
+		nexusCfg.Password,
 		tlsConfig,
 	)
 	if err != nil {

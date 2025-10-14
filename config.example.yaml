@@ -9,40 +9,57 @@ global_version: "3.9.4"
 # Automatically regenerate shims after install/uninstall
 auto_rehash: true
 
-# Nexus Repository Configuration (optional)
-# Uncomment and configure to use a private Nexus repository
-# nexus:
-#   enabled: true
-#   base_url: "https://nexus.example.com/repository/maven-public"
-#   username: "your-username"
-#   password: "your-password"
-#   tls:
-#     # Set to true to skip certificate verification (for self-signed certificates)
-#     insecure_skip_verify: false
-#     # Path to custom CA certificate file
-#     ca_file: "C:\\path\\to\\ca-certificate.pem"
+# Maven Repository Sources (optional)
+# Configure private Nexus repository as a source for downloading Maven distributions
+# repositories:
+#   nexus:
+#     enabled: true
+#     base_url: "https://nexus.example.com/repository/maven-public"
+#     username: "your-username"
+#     password: "your-password"
+#     tls:
+#       # Set to true to skip certificate verification (for self-signed certificates)
+#       insecure_skip_verify: false
+#       # Path to custom CA certificate file
+#       ca_file: "C:\\path\\to\\ca-certificate.pem"
+
+# Mirror Destination Configuration (optional)
+# Configure where to upload Maven distributions when using the mirror plugin
+# This is separate from the repositories configuration above
+# mirror:
+#   nexus:
+#     enabled: true
+#     base_url: "https://nexus.example.com/repository/maven-releases"
+#     username: "upload-user"
+#     password: "upload-password"
+#     tls:
+#       insecure_skip_verify: false
+#       ca_file: "C:\\path\\to\\ca-certificate.pem"
 
 # Example configurations:
 
-# For Nexus with self-signed certificate:
-# nexus:
-#   enabled: true
-#   base_url: "https://nexus.internal.company.com/repository/maven-central"
-#   username: "myuser"
-#   password: "mypassword"
-#   tls:
-#     insecure_skip_verify: true
+# For Nexus source repository with self-signed certificate:
+# repositories:
+#   nexus:
+#     enabled: true
+#     base_url: "https://nexus.internal.company.com/repository/maven-central"
+#     username: "myuser"
+#     password: "mypassword"
+#     tls:
+#       insecure_skip_verify: true
 
-# For Nexus with custom CA certificate:
-# nexus:
-#   enabled: true
-#   base_url: "https://nexus.internal.company.com/repository/maven-central"
-#   username: "myuser"
-#   password: "mypassword"
-#   tls:
-#     ca_file: "C:\\company\\ca\\root-ca.pem"
+# For mirror destination with custom CA certificate:
+# mirror:
+#   nexus:
+#     enabled: true
+#     base_url: "https://nexus.internal.company.com/repository/maven-releases"
+#     username: "admin"
+#     password: "admin123"
+#     tls:
+#       ca_file: "C:\\company\\ca\\root-ca.pem"
 
-# For Nexus without authentication:
-# nexus:
-#   enabled: true
-#   base_url: "https://nexus.public.company.com/repository/maven-central"
+# For public Nexus without authentication:
+# repositories:
+#   nexus:
+#     enabled: true
+#     base_url: "https://nexus.public.company.com/repository/maven-central"

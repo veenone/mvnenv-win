@@ -72,15 +72,15 @@ func runMirror(dryRun, skipExisting bool, maxVersions int) error {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
-	// Verify Nexus is configured
-	if cfg.Nexus == nil || !cfg.Nexus.Enabled {
-		return fmt.Errorf("Nexus repository is not configured\nPlease configure Nexus in %s", filepath.Join(mvnenvRoot, "config", "config.yaml"))
+	// Verify mirror Nexus is configured
+	if cfg.Mirror == nil || cfg.Mirror.Nexus == nil || !cfg.Mirror.Nexus.Enabled {
+		return fmt.Errorf("Mirror Nexus destination is not configured\nPlease configure mirror.nexus in %s", filepath.Join(mvnenvRoot, "config", "config.yaml"))
 	}
 
 	fmt.Println("Maven Version Mirror")
 	fmt.Println("===================")
 	fmt.Printf("Source: Apache Maven Archive\n")
-	fmt.Printf("Target: %s\n", cfg.Nexus.BaseURL)
+	fmt.Printf("Target: %s\n", cfg.Mirror.Nexus.BaseURL)
 	if dryRun {
 		fmt.Println("Mode: DRY RUN (no uploads will be performed)")
 	}
@@ -108,15 +108,15 @@ func runMirror(dryRun, skipExisting bool, maxVersions int) error {
 
 	fmt.Printf("Found %d versions to mirror\n\n", len(versions))
 
-	// Create Nexus client
+	// Create Nexus client for mirror destination
 	var nexusTLS *nexus.TLSConfig
-	if cfg.Nexus.TLS != nil {
+	if cfg.Mirror.Nexus.TLS != nil {
 		nexusTLS = &nexus.TLSConfig{
-			InsecureSkipVerify: cfg.Nexus.TLS.InsecureSkipVerify,
-			CAFile:             cfg.Nexus.TLS.CAFile,
+			InsecureSkipVerify: cfg.Mirror.Nexus.TLS.InsecureSkipVerify,
+			CAFile:             cfg.Mirror.Nexus.TLS.CAFile,
 		}
 	}
-	nexusClient, err := nexus.NewClient(cfg.Nexus.BaseURL, cfg.Nexus.Username, cfg.Nexus.Password, nexusTLS)
+	nexusClient, err := nexus.NewClient(cfg.Mirror.Nexus.BaseURL, cfg.Mirror.Nexus.Username, cfg.Mirror.Nexus.Password, nexusTLS)
 	if err != nil {
 		return fmt.Errorf("failed to create Nexus client: %w", err)
 	}

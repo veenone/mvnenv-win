@@ -11,11 +11,22 @@ import (
 
 // Config represents the main configuration file structure
 type Config struct {
-	Version       string           `yaml:"version"`
-	GlobalVersion string           `yaml:"global_version,omitempty"`
-	AutoRehash    bool             `yaml:"auto_rehash"`
-	Nexus         *NexusConfig     `yaml:"nexus,omitempty"`
+	Version       string            `yaml:"version"`
+	GlobalVersion string            `yaml:"global_version,omitempty"`
+	AutoRehash    bool              `yaml:"auto_rehash"`
+	Repositories  *RepositoriesConfig `yaml:"repositories,omitempty"`
+	Mirror        *MirrorConfig     `yaml:"mirror,omitempty"`
 	mu            sync.RWMutex
+}
+
+// RepositoriesConfig represents Maven repository sources configuration
+type RepositoriesConfig struct {
+	Nexus *NexusConfig `yaml:"nexus,omitempty"`
+}
+
+// MirrorConfig represents mirror destination configuration
+type MirrorConfig struct {
+	Nexus *NexusConfig `yaml:"nexus,omitempty"`
 }
 
 // NexusConfig represents Nexus repository configuration

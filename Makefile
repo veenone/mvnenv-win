@@ -8,7 +8,11 @@ DIST_DIR=dist
 
 # Read version from VERSION file
 VERSION_FILE=VERSION
-VERSION=$(shell type $(VERSION_FILE) 2>nul || cat $(VERSION_FILE))
+ifeq ($(OS),Windows_NT)
+	VERSION=$(shell type $(VERSION_FILE) 2>nul)
+else
+	VERSION=$(shell cat $(VERSION_FILE))
+endif
 LDFLAGS=-ldflags "-X main.Version=$(VERSION)"
 
 # Plugin build tags
@@ -20,21 +24,33 @@ all: build
 # Build the binary without plugins
 build:
 	@echo Building $(BINARY_NAME) standard...
+ifeq ($(OS),Windows_NT)
+	@if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
+else
 	@mkdir -p $(BUILD_DIR)
+endif
 	go build $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME) cmd/mvnenv/main.go
 	@echo Build complete: $(BUILD_DIR)/$(BINARY_NAME)
 
 # Build the binary with all plugins enabled
 build-plugins:
 	@echo Building $(BINARY_NAME) with plugins [$(PLUGIN_TAGS)]...
+ifeq ($(OS),Windows_NT)
+	@if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
+else
 	@mkdir -p $(BUILD_DIR)
+endif
 	go build -tags "$(PLUGIN_TAGS)" $(LDFLAGS) -o $(BUILD_DIR)/$(BINARY_NAME) cmd/mvnenv/main.go
 	@echo Build complete: $(BUILD_DIR)/$(BINARY_NAME)
 
 # Build shim executable
 build-shim:
 	@echo Building $(SHIM_NAME)...
+ifeq ($(OS),Windows_NT)
+	@if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
+else
 	@mkdir -p $(BUILD_DIR)
+endif
 	go build -o $(BUILD_DIR)/$(SHIM_NAME) cmd/shim/main.go
 	@echo Build complete: $(BUILD_DIR)/$(SHIM_NAME)
 
@@ -45,6 +61,18 @@ build-all: build-plugins build-shim
 # Create production distribution package
 dist: clean build-plugins build-shim
 	@echo Creating production distribution...
+ifeq ($(OS),Windows_NT)
+	@if not exist $(DIST_DIR)\mvnenv-$(VERSION)\bin mkdir $(DIST_DIR)\mvnenv-$(VERSION)\bin
+	@if not exist $(DIST_DIR)\mvnenv-$(VERSION)\config mkdir $(DIST_DIR)\mvnenv-$(VERSION)\config
+	@copy $(BUILD_DIR)\$(BINARY_NAME) $(DIST_DIR)\mvnenv-$(VERSION)\bin\ >nul
+	@copy $(BUILD_DIR)\$(SHIM_NAME) $(DIST_DIR)\mvnenv-$(VERSION)\bin\ >nul
+	@copy VERSION $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy README.md $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy SETUP.md $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy NEXUS.md $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy PLUGINS.md $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy config.example.yaml $(DIST_DIR)\mvnenv-$(VERSION)\config\ >nul
+else
 	@mkdir -p $(DIST_DIR)/mvnenv-$(VERSION)/bin
 	@mkdir -p $(DIST_DIR)/mvnenv-$(VERSION)/config
 	@cp $(BUILD_DIR)/$(BINARY_NAME) $(DIST_DIR)/mvnenv-$(VERSION)/bin/
@@ -55,6 +83,7 @@ dist: clean build-plugins build-shim
 	@cp NEXUS.md $(DIST_DIR)/mvnenv-$(VERSION)/
 	@cp PLUGINS.md $(DIST_DIR)/mvnenv-$(VERSION)/
 	@cp config.example.yaml $(DIST_DIR)/mvnenv-$(VERSION)/config/
+endif
 	@echo
 	@echo Production distribution created: $(DIST_DIR)/mvnenv-$(VERSION)
 	@echo
@@ -73,7 +102,12 @@ dist: clean build-plugins build-shim
 # Clean build artifacts
 clean:
 	@echo Cleaning...
+ifeq ($(OS),Windows_NT)
+	@if exist $(BUILD_DIR) rmdir /s /q $(BUILD_DIR)
+	@if exist $(DIST_DIR) rmdir /s /q $(DIST_DIR)
+else
 	@rm -rf $(BUILD_DIR) $(DIST_DIR)
+endif
 	@echo Clean complete
 
 # Run tests
