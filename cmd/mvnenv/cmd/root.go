@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/veenone/mvnenv-win/cmd/mvnenv/plugins"
 )
 
 var appVersion string
@@ -43,6 +44,11 @@ func SetVersion(v string) {
 func init() {
 	// Disable default completion command
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
+
+	// Register plugin commands
+	for _, plugin := range plugins.GetAll() {
+		rootCmd.AddCommand(plugin.Command())
+	}
 }
 
 // getMvnenvRoot returns the mvnenv installation root directory

@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/veenone/mvnenv-win/cmd/mvnenv/cmd"
+	_ "github.com/veenone/mvnenv-win/cmd/mvnenv/plugins/mirror" // Import plugins
 )
 
 // Version is the application version, can be overridden at build time with ldflags

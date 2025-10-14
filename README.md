@@ -15,6 +15,7 @@ mvnenv-win is a command-line tool for managing multiple Apache Maven installatio
 - **Apache Maven Integration**: Direct downloads from official Apache Maven archives
 - **Nexus Repository Support**: Download from private Nexus repositories with authentication and custom SSL/TLS
 - **Checksum Verification**: SHA-512 checksum verification for downloaded files
+- **Plugin System**: Optional plugins for extended functionality (Nexus mirroring, etc.)
 
 ## Installation
 
@@ -246,6 +247,47 @@ nexus:
 
 See [NEXUS.md](NEXUS.md) for complete documentation on Nexus integration.
 
+## Plugins
+
+mvnenv-win supports optional plugins that can be enabled at build time for extended functionality.
+
+### Mirror Plugin
+
+Create internal Nexus mirrors by downloading Maven distributions from Apache and uploading to Nexus:
+
+```bash
+# Mirror all Maven versions to configured Nexus repository
+mvnenv mirror
+
+# Dry-run to see what would be mirrored
+mvnenv mirror --dry-run
+
+# Mirror only the 10 most recent versions
+mvnenv mirror --max 10
+```
+
+**Note:** The mirror plugin requires:
+- Nexus repository configured in config.yaml
+- Nexus user with write permissions
+- Plugin must be enabled at build time
+
+### Building with Plugins
+
+```bash
+# Build without plugins (standard)
+go build -ldflags "-X main.Version=$(cat VERSION)" -o bin/mvnenv.exe cmd/mvnenv/main.go
+
+# Build with all plugins enabled
+go build -tags "mirror" -ldflags "-X main.Version=$(cat VERSION)" -o bin/mvnenv.exe cmd/mvnenv/main.go
+
+# Or use Makefile
+make build          # Without plugins
+make build-plugins  # With all plugins
+make dist           # Create production distribution with plugins
+```
+
+See [PLUGINS.md](PLUGINS.md) for complete plugin documentation.
+
 ## Requirements
 
 - Windows 10 or later
@@ -338,11 +380,24 @@ dir %USERPROFILE%\.mvnenv\shims\
 ### Building
 
 ```bash
-# Build binary
-go build -ldflags "-X main.Version=$(cat VERSION)" -o bin/mvnenv.exe cmd/mvnenv/main.go
-
-# Or using Make
+# Build standard binary (without plugins)
 make build
+
+# Build with all plugins enabled
+make build-plugins
+
+# Build shim executable
+make build-shim
+
+# Build everything (main + plugins + shim)
+make build-all
+
+# Create production distribution package
+make dist
+
+# Direct Go commands
+go build -ldflags "-X main.Version=$(cat VERSION)" -o bin/mvnenv.exe cmd/mvnenv/main.go
+go build -tags "mirror" -ldflags "-X main.Version=$(cat VERSION)" -o bin/mvnenv.exe cmd/mvnenv/main.go
 ```
 
 ### Running Tests
@@ -350,6 +405,17 @@ make build
 ```bash
 make test
 ```
+
+### Makefile Targets
+
+- `make build` - Build standard binary without plugins
+- `make build-plugins` - Build binary with all plugins enabled
+- `make build-shim` - Build shim executable
+- `make build-all` - Build everything
+- `make dist` - Create production distribution package
+- `make clean` - Remove build artifacts
+- `make test` - Run tests
+- `make help` - Display available targets
 
 ## License
 

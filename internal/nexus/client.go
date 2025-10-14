@@ -185,3 +185,83 @@ func (c *Client) DownloadVersion(ctx context.Context, version, destPath string, 
 
 	return nil
 }
+
+// UploadVersion uploads a Maven distribution to Nexus repository
+func (c *Client) UploadVersion(ctx context.Context, version, archivePath string, progress func(uploaded, total int64)) error {
+	// Open the archive file
+	file, err := os.Open(archivePath)
+	if err != nil {
+		return fmt.Errorf("failed to open archive: %w", err)
+	}
+	defer file.Close()
+
+	// Get file size for progress tracking
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return fmt.Errorf("failed to get file info: %w", err)
+	}
+	totalSize := fileInfo.Size()
+
+	// Construct upload URL
+	// Format: {baseURL}/org/apache/maven/apache-maven/{version}/apache-maven-{version}-bin.zip
+	uploadURL := fmt.Sprintf("%s/org/apache/maven/apache-maven/%s/apache-maven-%s-bin.zip",
+		c.baseURL, version, version)
+
+	// Create progress reader wrapper
+	var reader io.Reader = file
+	if progress != nil {
+		reader = &progressReader{
+			reader:   file,
+			total:    totalSize,
+			callback: progress,
+		}
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "PUT", uploadURL, reader)
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Content-Type", "application/zip")
+	req.ContentLength = totalSize
+
+	// Add authentication if configured
+	if c.username != "" && c.password != "" {
+		req.SetBasicAuth(c.username, c.password)
+	}
+
+	// Perform upload
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to upload: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Check response status
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("upload failed with status %d: %s", resp.StatusCode, string(body))
+	}
+
+	return nil
+}
+
+// progressReader wraps an io.Reader to track upload progress
+type progressReader struct {
+	reader   io.Reader
+	total    int64
+	uploaded int64
+	callback func(uploaded, total int64)
+}
+
+func (pr *progressReader) Read(p []byte) (int, error) {
+	n, err := pr.reader.Read(p)
+	if n > 0 {
+		pr.uploaded += int64(n)
+		if pr.callback != nil {
+			pr.callback(pr.uploaded, pr.total)
+		}
+	}
+	return n, err
+}
