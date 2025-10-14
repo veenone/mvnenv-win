@@ -23,8 +23,11 @@ var installCmd = &cobra.Command{
 
 Downloads the specified Maven version, verifies its checksum, and installs
 it to the mvnenv versions directory. Use the -l flag to list all available
-versions.`,
+versions.
+
+Use "latest" as the version to install the newest available Maven version.`,
 	Example: `  mvnenv install 3.9.4
+  mvnenv install latest
   mvnenv install -l
   mvnenv install -q 3.8.6`,
 	RunE: runInstall,
@@ -53,6 +56,16 @@ func runInstall(cmd *cobra.Command, args []string) error {
 	}
 
 	version := args[0]
+
+	// Handle "latest" keyword
+	if version == "latest" {
+		latestVersion, err := getLatestAvailableVersion(mvnenvRoot)
+		if err != nil {
+			return formatError(fmt.Errorf("failed to determine latest version: %w", err))
+		}
+		version = latestVersion
+		fmt.Printf("Installing latest Maven version: %s\n", version)
+	}
 
 	// Install version
 	installer := versionpkg.NewVersionInstaller(mvnenvRoot)
@@ -108,4 +121,40 @@ func listAvailableVersions() error {
 	}
 
 	return nil
+}
+
+// getLatestAvailableVersion returns the latest available Maven version
+func getLatestAvailableVersion(mvnenvRoot string) (string, error) {
+	cacheManager := cache.NewManager(mvnenvRoot)
+
+	// Try to load from cache first
+	versions, err := cacheManager.LoadVersions()
+
+	// If cache doesn't exist or is stale (>24 hours), fetch from repositories
+	if err != nil || len(versions) == 0 || cacheManager.IsCacheStale(24*time.Hour) {
+		repoManager := repository.NewManager(mvnenvRoot)
+		versions, err = repoManager.ListVersions()
+		if err != nil {
+			return "", fmt.Errorf("failed to list versions: %w", err)
+		}
+
+		// Sort versions (newest first)
+		versions, err = maven.SortVersions(versions)
+		if err != nil {
+			return "", fmt.Errorf("failed to sort versions: %w", err)
+		}
+
+		// Save to cache
+		if saveErr := cacheManager.SaveVersions(versions); saveErr != nil {
+			// Just warn, don't fail
+			fmt.Printf("Warning: Failed to save cache: %v\n", saveErr)
+		}
+	}
+
+	if len(versions) == 0 {
+		return "", fmt.Errorf("no versions available")
+	}
+
+	// Return the first version (newest)
+	return versions[0], nil
 }

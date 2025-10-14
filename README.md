@@ -82,6 +82,9 @@ mvnenv versions
 # Install Maven version
 mvnenv install <version>
 
+# Install latest Maven version
+mvnenv install latest
+
 # List available versions from Apache archive
 mvnenv install -l
 
@@ -90,6 +93,9 @@ mvnenv uninstall <version>
 
 # List installed versions
 mvnenv versions
+
+# Check if current version is the latest
+mvnenv status
 ```
 
 ### Version Selection
