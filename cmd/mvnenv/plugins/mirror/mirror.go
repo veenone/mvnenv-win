@@ -175,7 +175,7 @@ func runMirror(dryRun, skipExisting bool, maxVersions int) error {
 		progressCallback := download.ProgressCallback(func(downloaded, total int64) {
 			if total > 0 {
 				percent := float64(downloaded) / float64(total) * 100
-				fmt.Printf("\r  Downloading from Apache... %.1f%%", percent)
+				fmt.Printf("\r  Downloading from Apache... %6.1f%%", percent)
 			}
 		})
 
@@ -185,7 +185,7 @@ func runMirror(dryRun, skipExisting bool, maxVersions int) error {
 			failedCount++
 			continue
 		}
-		fmt.Printf("\r  ✓ Downloaded from Apache    \n")
+		fmt.Printf("\r  ✓ Downloaded from Apache              \n")
 
 		// Upload to Nexus
 		fmt.Printf("  Uploading to Nexus...")
@@ -193,7 +193,7 @@ func runMirror(dryRun, skipExisting bool, maxVersions int) error {
 		uploadCallback := func(uploaded, total int64) {
 			if total > 0 {
 				percent := float64(uploaded) / float64(total) * 100
-				fmt.Printf("\r  Uploading to Nexus... %.1f%%", percent)
+				fmt.Printf("\r  Uploading to Nexus... %6.1f%%", percent)
 			}
 		}
 
@@ -204,7 +204,7 @@ func runMirror(dryRun, skipExisting bool, maxVersions int) error {
 			os.Remove(archivePath)
 			continue
 		}
-		fmt.Printf("\r  ✓ Uploaded to Nexus      \n")
+		fmt.Printf("\r  ✓ Uploaded to Nexus                \n")
 
 		// Clean up downloaded file
 		os.Remove(archivePath)

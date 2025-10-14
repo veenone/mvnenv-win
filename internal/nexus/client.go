@@ -99,8 +99,14 @@ func (c *Client) ListVersions(ctx context.Context) ([]string, error) {
 	}
 	defer resp.Body.Close()
 
+	// Handle 404 - metadata doesn't exist yet (empty repository)
+	if resp.StatusCode == http.StatusNotFound {
+		return []string{}, nil
+	}
+
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("unexpected status code: %d: %s", resp.StatusCode, string(body))
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -140,7 +146,8 @@ func (c *Client) DownloadVersion(ctx context.Context, version, destPath string, 
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("unexpected status code: %d: %s", resp.StatusCode, string(body))
 	}
 
 	// Create destination file
