@@ -1,4 +1,4 @@
-.PHONY: build build-plugins build-all build-shim clean test dist help
+.PHONY: build build-plugins build-all build-shim clean test dist dist-noplugin help
 
 # Build variables
 BINARY_NAME=mvnenv.exe
@@ -99,6 +99,45 @@ endif
 	@echo   2. Add the bin directory to your PATH
 	@echo   3. Run: mvnenv.exe rehash
 
+# Create production distribution package without plugins
+dist-noplugin: clean build build-shim
+	@echo Creating production distribution (no plugins)...
+ifeq ($(OS),Windows_NT)
+	@if not exist $(DIST_DIR)\mvnenv-$(VERSION)\bin mkdir $(DIST_DIR)\mvnenv-$(VERSION)\bin
+	@if not exist $(DIST_DIR)\mvnenv-$(VERSION)\config mkdir $(DIST_DIR)\mvnenv-$(VERSION)\config
+	@copy $(BUILD_DIR)\$(BINARY_NAME) $(DIST_DIR)\mvnenv-$(VERSION)\bin\ >nul
+	@copy $(BUILD_DIR)\$(SHIM_NAME) $(DIST_DIR)\mvnenv-$(VERSION)\bin\ >nul
+	@copy VERSION $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy README.md $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy SETUP.md $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy NEXUS.md $(DIST_DIR)\mvnenv-$(VERSION)\ >nul
+	@copy config.example.yaml $(DIST_DIR)\mvnenv-$(VERSION)\config\ >nul
+else
+	@mkdir -p $(DIST_DIR)/mvnenv-$(VERSION)/bin
+	@mkdir -p $(DIST_DIR)/mvnenv-$(VERSION)/config
+	@cp $(BUILD_DIR)/$(BINARY_NAME) $(DIST_DIR)/mvnenv-$(VERSION)/bin/
+	@cp $(BUILD_DIR)/$(SHIM_NAME) $(DIST_DIR)/mvnenv-$(VERSION)/bin/
+	@cp VERSION $(DIST_DIR)/mvnenv-$(VERSION)/
+	@cp README.md $(DIST_DIR)/mvnenv-$(VERSION)/
+	@cp SETUP.md $(DIST_DIR)/mvnenv-$(VERSION)/
+	@cp NEXUS.md $(DIST_DIR)/mvnenv-$(VERSION)/
+	@cp config.example.yaml $(DIST_DIR)/mvnenv-$(VERSION)/config/
+endif
+	@echo
+	@echo Production distribution created: $(DIST_DIR)/mvnenv-$(VERSION)
+	@echo
+	@echo Contents:
+	@echo   - bin/$(BINARY_NAME) standard, no plugins
+	@echo   - bin/$(SHIM_NAME)
+	@echo   - VERSION
+	@echo   - README.md, SETUP.md, NEXUS.md
+	@echo   - config/config.example.yaml
+	@echo
+	@echo To install:
+	@echo   1. Copy the mvnenv-$(VERSION) directory to a permanent location
+	@echo   2. Add the bin directory to your PATH
+	@echo   3. Run: mvnenv.exe rehash
+
 # Clean build artifacts
 clean:
 	@echo Cleaning...
@@ -121,7 +160,8 @@ help:
 	@echo   build-plugins  - Build the binary with all plugins enabled
 	@echo   build-shim     - Build the shim executable
 	@echo   build-all      - Build everything
-	@echo   dist           - Create production distribution package
+	@echo   dist           - Create production distribution package with plugins
+	@echo   dist-noplugin  - Create production distribution package without plugins
 	@echo   clean          - Remove build artifacts
 	@echo   test           - Run tests
 	@echo   help           - Display this help message

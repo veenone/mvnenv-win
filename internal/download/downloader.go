@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 )
 
 // Downloader handles file downloads with progress tracking
@@ -25,8 +26,34 @@ func NewDownloader() *Downloader {
 // ProgressCallback is called during download to report progress
 type ProgressCallback func(downloaded int64, total int64)
 
-// Download downloads a file from URL to destination path
+// Download downloads a file from URL to destination path with retry logic
 func (d *Downloader) Download(url string, destPath string, progress ProgressCallback) error {
+	const maxRetries = 3
+	var lastErr error
+
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		if attempt > 0 {
+			// Exponential backoff: 1s, 2s, 4s
+			backoff := time.Duration(1<<uint(attempt-1)) * time.Second
+			fmt.Printf("Retrying download in %v (attempt %d/%d)...\n", backoff, attempt+1, maxRetries)
+			time.Sleep(backoff)
+		}
+
+		err := d.downloadWithRetry(url, destPath, progress)
+		if err == nil {
+			return nil
+		}
+
+		lastErr = err
+		// Delete partial file if download failed
+		os.Remove(destPath)
+	}
+
+	return fmt.Errorf("download failed after %d attempts: %w", maxRetries, lastErr)
+}
+
+// downloadWithRetry performs a single download attempt
+func (d *Downloader) downloadWithRetry(url string, destPath string, progress ProgressCallback) error {
 	// Create HTTP request
 	resp, err := d.client.Get(url)
 	if err != nil {

@@ -17,6 +17,10 @@ type VersionInstaller struct {
 	repoManager   *repository.Manager
 	resolver      *VersionResolver
 	autoRehash    bool
+	force         bool
+	skipExisting  bool
+	offline       bool
+	quiet         bool
 }
 
 // NewVersionInstaller creates a new version installer
@@ -26,14 +30,53 @@ func NewVersionInstaller(mvnenvRoot string) *VersionInstaller {
 		repoManager: repository.NewManager(mvnenvRoot),
 		resolver:    NewVersionResolver(mvnenvRoot),
 		autoRehash:  true, // Enable automatic shim regeneration
+		force:       false,
+		skipExisting: false,
+		offline:     false,
+		quiet:       false,
 	}
+}
+
+// SetForce sets the force flag (reinstall even if exists)
+func (i *VersionInstaller) SetForce(force bool) {
+	i.force = force
+}
+
+// SetSkipExisting sets the skip-existing flag
+func (i *VersionInstaller) SetSkipExisting(skip bool) {
+	i.skipExisting = skip
+}
+
+// SetOffline sets the offline flag
+func (i *VersionInstaller) SetOffline(offline bool) {
+	i.offline = offline
+}
+
+// SetQuiet sets the quiet flag
+func (i *VersionInstaller) SetQuiet(quiet bool) {
+	i.quiet = quiet
 }
 
 // InstallVersion installs a Maven version
 func (i *VersionInstaller) InstallVersion(version string) error {
 	// Check if already installed
 	if i.resolver.IsVersionInstalled(version) {
-		return fmt.Errorf("version '%s' already installed", version)
+		if i.skipExisting {
+			if !i.quiet {
+				fmt.Printf("Maven %s is already installed (skipped)\n", version)
+			}
+			return nil
+		}
+		if !i.force {
+			return fmt.Errorf("Maven %s is already installed (use --force to reinstall)", version)
+		}
+		// Force reinstall: remove existing version first
+		if !i.quiet {
+			fmt.Printf("Maven %s already installed, reinstalling...\n", version)
+		}
+		if err := i.UninstallVersion(version); err != nil {
+			return fmt.Errorf("failed to remove existing version: %w", err)
+		}
 	}
 
 	// Create directories
@@ -47,23 +90,48 @@ func (i *VersionInstaller) InstallVersion(version string) error {
 		return fmt.Errorf("create versions directory: %w", err)
 	}
 
+	// Check disk space (require at least 100MB for safety)
+	requiredSpace := int64(100 * 1024 * 1024) // 100MB
+	availableSpace, err := i.getAvailableDiskSpace(i.mvnenvRoot)
+	if err != nil {
+		// Warn but don't fail if we can't check disk space
+		if !i.quiet {
+			fmt.Printf("Warning: Could not check disk space: %v\n", err)
+		}
+	} else if availableSpace < requiredSpace {
+		return fmt.Errorf("insufficient disk space: required %d MB, available %d MB",
+			requiredSpace/(1024*1024), availableSpace/(1024*1024))
+	}
+
 	// Download to cache
 	archivePath := filepath.Join(cacheDir, fmt.Sprintf("apache-maven-%s-bin.zip", version))
 
-	progress := func(downloaded, total int64) {
-		if total > 0 {
-			percent := float64(downloaded) / float64(total) * 100
-			fmt.Printf("\rDownloading: %.1f%%", percent)
+	var progress func(int64, int64)
+	if !i.quiet {
+		progress = func(downloaded, total int64) {
+			if total > 0 {
+				percent := float64(downloaded) / float64(total) * 100
+				fmt.Printf("\rDownloading: %.1f%%", percent)
+			}
 		}
+	}
+
+	// Configure repository manager for offline mode
+	if i.offline {
+		i.repoManager.SetOfflineMode(true)
 	}
 
 	if err := i.repoManager.DownloadVersion(version, archivePath, progress); err != nil {
 		return fmt.Errorf("download failed: %w", err)
 	}
-	fmt.Println() // New line after progress
+	if !i.quiet && progress != nil {
+		fmt.Println() // New line after progress
+	}
 
 	// Extract to versions directory
-	fmt.Printf("Installing Maven %s...\n", version)
+	if !i.quiet {
+		fmt.Printf("Installing Maven %s...\n", version)
+	}
 	versionPath := filepath.Join(versionsDir, version)
 
 	if err := i.extractZip(archivePath, versionsDir, version); err != nil {
@@ -76,7 +144,9 @@ func (i *VersionInstaller) InstallVersion(version string) error {
 		return fmt.Errorf("installation verification failed: mvn.cmd not found")
 	}
 
-	fmt.Printf("Maven %s installed successfully\n", version)
+	if !i.quiet {
+		fmt.Printf("Maven %s installed successfully\n", version)
+	}
 
 	// Automatically regenerate shims
 	if i.autoRehash {

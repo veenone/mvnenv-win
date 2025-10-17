@@ -15,15 +15,22 @@ type Manager struct {
 	nexusClient *nexus.Client
 	config      *config.Manager
 	mvnenvRoot  string
+	offlineMode bool
 }
 
 // NewManager creates a new repository manager
 func NewManager(mvnenvRoot string) *Manager {
 	return &Manager{
-		apache:     NewApacheArchive(),
-		config:     config.NewManager(mvnenvRoot),
-		mvnenvRoot: mvnenvRoot,
+		apache:      NewApacheArchive(),
+		config:      config.NewManager(mvnenvRoot),
+		mvnenvRoot:  mvnenvRoot,
+		offlineMode: false,
 	}
+}
+
+// SetOfflineMode enables or disables offline mode (Nexus only)
+func (m *Manager) SetOfflineMode(offline bool) {
+	m.offlineMode = offline
 }
 
 // initializeNexus initializes Nexus client if configured
@@ -127,8 +134,19 @@ func (m *Manager) DownloadVersion(version string, destPath string, progress down
 		if err == nil {
 			return nil
 		}
+
+		// In offline mode, don't fall back to Apache archive
+		if m.offlineMode {
+			return fmt.Errorf("offline mode: Maven %s not available in Nexus and mirrors disabled", version)
+		}
+
 		fmt.Printf("Nexus download failed: %v\n", err)
 		fmt.Println("Falling back to Apache archive...")
+	}
+
+	// If offline mode and no Nexus configured, fail
+	if m.offlineMode {
+		return fmt.Errorf("offline mode enabled but Nexus is not configured")
 	}
 
 	// Fall back to Apache archive

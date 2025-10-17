@@ -148,6 +148,20 @@ func (m *Manager) SetGlobalVersion(version string) error {
 	return m.Save(config)
 }
 
+// UnsetGlobalVersion removes the global Maven version
+func (m *Manager) UnsetGlobalVersion() error {
+	config, err := m.Load()
+	if err != nil {
+		config = &Config{
+			Version:    "1.0",
+			AutoRehash: true,
+		}
+	}
+
+	config.GlobalVersion = ""
+	return m.Save(config)
+}
+
 // GetConfig returns the current configuration
 func (m *Manager) GetConfig() (*Config, error) {
 	return m.Load()

@@ -83,11 +83,25 @@ mvnenv versions
 # Install Maven version
 mvnenv install <version>
 
+# Install multiple Maven versions at once
+mvnenv install 3.8.8 3.9.6 4.0.0-alpha-13
+
 # Install latest Maven version
 mvnenv install latest
 
 # List available versions from Apache archive
 mvnenv install -l
+
+# Install with options
+mvnenv install -f 3.9.6              # Force reinstall if already exists
+mvnenv install -s 3.9.6              # Skip if already exists (no error)
+mvnenv install -c 3.9.6              # Clear cache before installing
+mvnenv install -q 3.9.6              # Quiet mode (suppress output)
+mvnenv install --offline 3.9.6       # Offline mode (Nexus only, no Apache fallback)
+
+# Combine flags
+mvnenv install -f -q 3.9.6           # Force + quiet
+mvnenv install -c -s 3.8.8 3.9.6     # Clear + skip-existing + multiple versions
 
 # Uninstall Maven version
 mvnenv uninstall <version>
@@ -99,21 +113,54 @@ mvnenv versions
 mvnenv status
 ```
 
+#### Installation Flags
+
+| Flag | Short | Description |
+|------|-------|-------------|
+| `--list` | `-l` | List all available Maven versions |
+| `--quiet` | `-q` | Suppress progress output (errors still shown) |
+| `--force` | `-f` | Force reinstall even if version already exists |
+| `--skip-existing` | `-s` | Skip installation if version exists (no error) |
+| `--clear` | `-c` | Clear download cache before installing |
+| `--offline` | | Offline mode: only use Nexus (fail if unavailable) |
+
 ### Version Selection
 
 mvnenv uses a three-tier hierarchy to resolve which Maven version to use:
 
 1. **Shell**: Set via `MVNENV_MAVEN_VERSION` environment variable (highest priority)
 2. **Local**: Set via `.maven-version` file in current or parent directories
-3. **Global**: Set in `%USERPROFILE%\.mvnenv\config\config.yaml` (lowest priority)
+3. **Global**: Set via `mvnenv global` command (lowest priority)
+
+#### Global Version
+
+The global version provides a system-wide default Maven version used when no shell or local version is specified.
 
 ```bash
-# Set global version (system-wide default)
+# Set global version
 mvnenv global 3.9.4
 
+# Show current global version
+mvnenv global
+
+# Unset global version
+mvnenv global --unset
+```
+
+#### Local Version
+
+Set a project-specific Maven version using a `.maven-version` file:
+
+```bash
 # Set local version (project-specific)
 mvnenv local 3.8.6
+```
 
+#### Shell Version
+
+Override version for the current shell session:
+
+```bash
 # Set shell version (current session only)
 mvnenv shell 3.9.4
 # Then set environment variable:
@@ -412,7 +459,8 @@ make test
 - `make build-plugins` - Build binary with all plugins enabled
 - `make build-shim` - Build shim executable
 - `make build-all` - Build everything
-- `make dist` - Create production distribution package
+- `make dist` - Create production distribution package with plugins
+- `make dist-noplugin` - Create production distribution package without plugins
 - `make clean` - Remove build artifacts
 - `make test` - Run tests
 - `make help` - Display available targets

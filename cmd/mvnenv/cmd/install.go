@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -12,8 +14,12 @@ import (
 )
 
 var (
-	installList  bool
-	installQuiet bool
+	installList         bool
+	installQuiet        bool
+	installForce        bool
+	installSkipExisting bool
+	installClear        bool
+	installOffline      bool
 )
 
 var installCmd = &cobra.Command{
@@ -36,6 +42,10 @@ Use "latest" as the version to install the newest available Maven version.`,
 func init() {
 	installCmd.Flags().BoolVarP(&installList, "list", "l", false, "List available versions")
 	installCmd.Flags().BoolVarP(&installQuiet, "quiet", "q", false, "Suppress output")
+	installCmd.Flags().BoolVarP(&installForce, "force", "f", false, "Force reinstall if version already exists")
+	installCmd.Flags().BoolVarP(&installSkipExisting, "skip-existing", "s", false, "Skip installation if version already exists (no error)")
+	installCmd.Flags().BoolVarP(&installClear, "clear", "c", false, "Clear cache before installing")
+	installCmd.Flags().BoolVar(&installOffline, "offline", false, "Offline mode: only use Nexus (fail if unavailable)")
 	rootCmd.AddCommand(installCmd)
 }
 
@@ -52,25 +62,103 @@ func runInstall(cmd *cobra.Command, args []string) error {
 
 	// Require version argument
 	if len(args) == 0 {
-		return fmt.Errorf("version argument required\nUsage: mvnenv install <version>\nList available versions with: mvnenv install -l")
+		return fmt.Errorf("version argument required\nUsage: mvnenv install <version> [version2 ...]\nList available versions with: mvnenv install -l")
 	}
 
-	version := args[0]
-
-	// Handle "latest" keyword
-	if version == "latest" {
-		latestVersion, err := getLatestAvailableVersion(mvnenvRoot)
-		if err != nil {
-			return formatError(fmt.Errorf("failed to determine latest version: %w", err))
+	// Clear cache if requested
+	if installClear {
+		if err := clearInstallCache(mvnenvRoot); err != nil {
+			fmt.Printf("Warning: Failed to clear cache: %v\n", err)
+		} else if !installQuiet {
+			fmt.Println("Cache cleared")
 		}
-		version = latestVersion
-		fmt.Printf("Installing latest Maven version: %s\n", version)
 	}
+
+	// Handle multiple version installation
+	var successfulInstalls []string
+	var failedInstalls []string
+
+	for _, version := range args {
+		// Handle "latest" keyword
+		if version == "latest" {
+			latestVersion, err := getLatestAvailableVersion(mvnenvRoot)
+			if err != nil {
+				failedInstalls = append(failedInstalls, fmt.Sprintf("%s (failed to determine latest: %v)", version, err))
+				continue
+			}
+			version = latestVersion
+			if !installQuiet {
+				fmt.Printf("Installing latest Maven version: %s\n", version)
+			}
+		}
+
+		// Install version with flags
+		if err := installSingleVersion(mvnenvRoot, version); err != nil {
+			failedInstalls = append(failedInstalls, fmt.Sprintf("%s (%v)", version, err))
+		} else {
+			successfulInstalls = append(successfulInstalls, version)
+		}
+	}
+
+	// Report results
+	if !installQuiet && len(args) > 1 {
+		fmt.Println("\nInstallation Summary:")
+		if len(successfulInstalls) > 0 {
+			fmt.Printf("✓ Successfully installed: %v\n", successfulInstalls)
+		}
+		if len(failedInstalls) > 0 {
+			fmt.Printf("✗ Failed: %v\n", failedInstalls)
+		}
+	}
+
+	// Return error if any installations failed
+	if len(failedInstalls) > 0 {
+		if len(successfulInstalls) == 0 {
+			return fmt.Errorf("all installations failed")
+		}
+		return fmt.Errorf("partial success: %d succeeded, %d failed", len(successfulInstalls), len(failedInstalls))
+	}
+
+	return nil
+}
+
+// installSingleVersion installs a single Maven version with flag handling
+func installSingleVersion(mvnenvRoot, version string) error {
+	installer := versionpkg.NewVersionInstaller(mvnenvRoot)
+
+	// Configure installer based on flags
+	installer.SetForce(installForce)
+	installer.SetSkipExisting(installSkipExisting)
+	installer.SetOffline(installOffline)
+	installer.SetQuiet(installQuiet)
 
 	// Install version
-	installer := versionpkg.NewVersionInstaller(mvnenvRoot)
 	if err := installer.InstallVersion(version); err != nil {
-		return formatError(err)
+		return err
+	}
+
+	return nil
+}
+
+// clearInstallCache clears the download cache
+func clearInstallCache(mvnenvRoot string) error {
+	cacheDir := filepath.Join(mvnenvRoot, "cache")
+	entries, err := os.ReadDir(cacheDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil // Cache doesn't exist, nothing to clear
+		}
+		return fmt.Errorf("failed to read cache directory: %w", err)
+	}
+
+	for _, entry := range entries {
+		// Only delete .zip files, keep versions.json
+		if !entry.IsDir() && filepath.Ext(entry.Name()) == ".zip" {
+			path := filepath.Join(cacheDir, entry.Name())
+			if err := os.Remove(path); err != nil {
+				return fmt.Errorf("failed to remove %s: %w", entry.Name(), err)
+			}
+		}
 	}
 
 	return nil
